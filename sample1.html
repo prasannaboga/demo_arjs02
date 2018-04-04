@@ -18,12 +18,12 @@
 <div class="preview-container border border-primary">
   <video id="preview" class="img-fluid"></video>
 </div>
-<div>
+<div class="alert alert-dismissible alert-info display-data">
   Date : <span id="qrcode-data">No Data Detected</span>
 </div>
 
 <script type="text/javascript">
-  scanner = new Instascan.Scanner({video: document.getElementById('preview')});
+  scanner = new Instascan.Scanner({video: document.getElementById('preview'), mirror: false});
   scanner.addListener('scan', function (content) {
     console.log(content);
     document.getElementById('qrcode-data').innerHTML = content;
