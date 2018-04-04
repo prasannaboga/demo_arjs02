@@ -1,5 +1,6 @@
 <script src="javascripts/instascan.min.js"></script>
 <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+<!--<script src="javascripts/three.js"></script>-->
 
 <div class="preview-container border border-primary">
   <video id="preview" class="img-fluid"></video>
@@ -10,17 +11,47 @@
 </div>
 
 <a-scene>
-  <a-entity scale=".5 .5 .5">
-    <a-entity gltf-model="images/Duck.gltf" position="0 1.25 -5">
-    </a-entity>
-  </a-entity>
+
 </a-scene>
 
 <script type="text/javascript">
+
+  // register a qr-code-box
+  AFRAME.registerComponent('qr-code-box', {
+    schema: {},
+    init: function () {
+      // This will be called after the entity has properly attached and loaded.
+      console.log('I am ready! - qr-code-box');
+    }
+  });
+
+  var sceneEl = document.querySelector('a-scene');
+  var entityEl = document.createElement('a-entity');
+  entityEl.setAttribute('geometry', {
+    primitive: 'box'
+  });
+  entityEl.setAttribute('position', {x: 0, y: 1.25, z: -5});
+  sceneEl.appendChild(entityEl);
+  entityEl.setAttribute('color', 'blue');
+
+  //entityEl.setAttribute('visible', false);
+
+
+  // using instanscan for qr code reader
   scanner = new Instascan.Scanner({video: document.getElementById('preview'), mirror: false});
   scanner.addListener('scan', function (content) {
     console.log(content);
     document.getElementById('qrcode-data').innerHTML = content;
+    if (content == 'blue') {
+      entityEl.setAttribute('color', 'blue');
+    } else if (content == 'green') {
+      entityEl.setAttribute('color', 'green');
+    } else if (content == 'red') {
+      entityEl.setAttribute('color', 'red');
+    } else {
+      entityEl.setAttribute('color', 'orange');
+    }
+    entityEl.setAttribute('visible', true);
   });
   Instascan.Camera.getCameras().then(function (cameras) {
     if (cameras.length > 0) {
@@ -30,7 +61,7 @@
       document.getElementById('qrcode-data').innerHTML = 'No cameras found.'
     }
   }).catch(function (e) {
-    console.error(e);
+    //console.error(e);
     document.getElementById('qrcode-data').innerHTML = e.message
   });
 </script>
