@@ -1,4 +1,5 @@
 <script src="javascripts/instascan.min.js"></script>
+<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 
 <div class="preview-container border border-primary">
   <video id="preview" class="img-fluid"></video>
@@ -7,6 +8,13 @@
   Date : <span id="qrcode-data">No Data Detected</span>
   <span class="float-right"><%= link_to 'Index', '/index.html' %></span>
 </div>
+
+<a-scene>
+  <a-entity scale=".5 .5 .5">
+    <a-entity gltf-model="images/Duck.gltf" position="0 1.25 -5">
+    </a-entity>
+  </a-entity>
+</a-scene>
 
 <script type="text/javascript">
   scanner = new Instascan.Scanner({video: document.getElementById('preview'), mirror: false});
