@@ -25,11 +25,9 @@
 </div>
 
 <a-scene>
-  <a-entity scale=".5 .5 .5">
-    <a-entity gltf-model="images/Duck.gltf" position="0 1.25 -5">
-    </a-entity>
-  </a-entity>
+
 </a-scene>
+
 <script type="text/javascript">
   scanner = new Instascan.Scanner({video: document.getElementById('preview'), mirror: false});
   scanner.addListener('scan', function (content) {
@@ -44,8 +42,25 @@
       document.getElementById('qrcode-data').innerHTML = 'No cameras found.'
     }
   }).catch(function (e) {
-    console.error(e);
+    //console.error(e);
     document.getElementById('qrcode-data').innerHTML = e.message
+  });
+
+  var sceneEl = document.querySelector('a-scene');
+  var entityEl = document.createElement('a-entity');
+  entityEl.setAttribute('geometry', {
+    primitive: 'box',
+    height: 3,
+    width: 1
+  });
+  entityEl.setAttribute('position', {x: 0, y: 1.25, z: -5});
+  sceneEl.appendChild(entityEl);
+
+  AFRAME.registerComponent('qr-code-box', {
+    init: function () {
+      // This will be called after the entity has properly attached and loaded.
+      console.log('I am ready! - qr-code-box');
+    }
   });
 </script>
 
