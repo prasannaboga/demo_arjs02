@@ -1,0 +1,27 @@
+<script src="javascripts/instascan.min.js"></script>
+
+<div class="preview-container border border-primary">
+  <video id="preview" class="img-fluid"></video>
+</div>
+<div>
+  Date : <span id="qrcode-data">No Data Detected</span>
+</div>
+
+<script type="text/javascript">
+  scanner = new Instascan.Scanner({video: document.getElementById('preview')});
+  scanner.addListener('scan', function (content) {
+    console.log(content);
+    document.getElementById('qrcode-data').innerHTML = content;
+  });
+  Instascan.Camera.getCameras().then(function (cameras) {
+    if (cameras.length > 0) {
+      scanner.start(cameras[0]);
+    } else {
+      console.error('No cameras found.');
+      document.getElementById('qrcode-data').innerHTML = 'No cameras found.'
+    }
+  }).catch(function (e) {
+    console.error(e);
+    document.getElementById('qrcode-data').innerHTML = e.message
+  });
+</script>
