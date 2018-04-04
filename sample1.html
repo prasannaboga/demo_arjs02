@@ -15,6 +15,7 @@
 <div class="container-fluid">
   <script src="javascripts/instascan.min.js"></script>
 <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+<!--<script src="javascripts/three.js"></script>-->
 
 <div class="preview-container border border-primary">
   <video id="preview" class="img-fluid"></video>
@@ -29,10 +30,35 @@
 </a-scene>
 
 <script type="text/javascript">
+
+  // register a qr-code-box
+  AFRAME.registerComponent('qr-code-box', {
+    schema: {
+
+    },
+    init: function () {
+      // This will be called after the entity has properly attached and loaded.
+      console.log('I am ready! - qr-code-box');
+    }
+  });
+
+  var sceneEl = document.querySelector('a-scene');
+  var entityEl = document.createElement('a-entity');
+  entityEl.setAttribute('geometry', {
+    primitive: 'box'
+  });
+  entityEl.setAttribute('position', {x: 0, y: 1.25, z: -5});
+  sceneEl.appendChild(entityEl);
+  entityEl.setAttribute('visible', false);
+
+
+
+  // using instanscan for qr code reader
   scanner = new Instascan.Scanner({video: document.getElementById('preview'), mirror: false});
   scanner.addListener('scan', function (content) {
     console.log(content);
     document.getElementById('qrcode-data').innerHTML = content;
+    entityEl.setAttribute('visible', true);
   });
   Instascan.Camera.getCameras().then(function (cameras) {
     if (cameras.length > 0) {
@@ -44,23 +70,6 @@
   }).catch(function (e) {
     //console.error(e);
     document.getElementById('qrcode-data').innerHTML = e.message
-  });
-
-  var sceneEl = document.querySelector('a-scene');
-  var entityEl = document.createElement('a-entity');
-  entityEl.setAttribute('geometry', {
-    primitive: 'box',
-    height: 3,
-    width: 1
-  });
-  entityEl.setAttribute('position', {x: 0, y: 1.25, z: -5});
-  sceneEl.appendChild(entityEl);
-
-  AFRAME.registerComponent('qr-code-box', {
-    init: function () {
-      // This will be called after the entity has properly attached and loaded.
-      console.log('I am ready! - qr-code-box');
-    }
   });
 </script>
 
