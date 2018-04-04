@@ -14,13 +14,21 @@
 <body>
 <div class="container-fluid">
   <script src="javascripts/instascan.min.js"></script>
+<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 
 <div class="preview-container border border-primary">
   <video id="preview" class="img-fluid"></video>
 </div>
 <div class="alert alert-dismissible alert-info display-data">
   Date : <span id="qrcode-data">No Data Detected</span>
+  <span class="float-right"><a href="./">Index</a></span>
 </div>
+
+<a-scene>
+  <a-box color="#6173F4" opacity="0.8" depth="2"></a-box>
+  <a-sphere radius="2" src="texture.png" position="1 1 0"></a-sphere>
+  <a-sky color="#ECECEC"></a-sky>
+</a-scene>
 
 <script type="text/javascript">
   scanner = new Instascan.Scanner({video: document.getElementById('preview'), mirror: false});
