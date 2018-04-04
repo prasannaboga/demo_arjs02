@@ -52,12 +52,20 @@
   entityEl.setAttribute('visible', false);
 
 
-
   // using instanscan for qr code reader
   scanner = new Instascan.Scanner({video: document.getElementById('preview'), mirror: false});
   scanner.addListener('scan', function (content) {
     console.log(content);
     document.getElementById('qrcode-data').innerHTML = content;
+    if(content == 'blue') {
+      entityEl.setAttribute('color', 'blue');
+    } else if (content == 'green') {
+      entityEl.setAttribute('color', 'green');
+    } else if (content == 'red') {
+      entityEl.setAttribute('color', 'red');
+    } else {
+      entityEl.setAttribute('color', 'orange');
+    }
     entityEl.setAttribute('visible', true);
   });
   Instascan.Camera.getCameras().then(function (cameras) {
