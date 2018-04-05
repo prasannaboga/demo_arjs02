@@ -9,13 +9,13 @@
   <title>Sample Project for QR Code with AR</title>
   <link href="stylesheets/bootstrap.css" rel="stylesheet" />
   <link href="stylesheets/site.css" rel="stylesheet" />
+  <script src="javascripts/jquery-3.3.1.js"></script>
   <script src="javascripts/site.js"></script>
 </head>
 <body>
 <div class="container-fluid">
   <script src="javascripts/instascan.min.js"></script>
 <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
-<!--<script src="javascripts/three.js"></script>-->
 
 <div class="preview-container border border-primary">
   <video id="preview" class="img-fluid"></video>
@@ -33,9 +33,7 @@
 
   // register a qr-code-box
   AFRAME.registerComponent('qr-code-box', {
-    schema: {
-
-    },
+    schema: {},
     init: function () {
       // This will be called after the entity has properly attached and loaded.
       console.log('I am ready! - qr-code-box');
@@ -49,7 +47,9 @@
   });
   entityEl.setAttribute('position', {x: 0, y: 1.25, z: -5});
   sceneEl.appendChild(entityEl);
-  entityEl.setAttribute('visible', false);
+  entityEl.setAttribute('color', 'blue');
+
+  //entityEl.setAttribute('visible', false);
 
 
   // using instanscan for qr code reader
@@ -57,7 +57,7 @@
   scanner.addListener('scan', function (content) {
     console.log(content);
     document.getElementById('qrcode-data').innerHTML = content;
-    if(content == 'blue') {
+    if (content == 'blue') {
       entityEl.setAttribute('color', 'blue');
     } else if (content == 'green') {
       entityEl.setAttribute('color', 'green');
