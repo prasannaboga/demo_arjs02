@@ -20,6 +20,10 @@
     min-height: 500px;
     height: 85%;
   }
+
+  #a-scene {
+    display: none;
+  }
 </style>
 
 <div class="card border-primary aframe-scene-card">
@@ -30,6 +34,13 @@
 
     <video id="preview" class="border border-primary w-100"></video>
 
+    <a-scene id="a-scene">
+      <a-box position="-1 0.5 -3" rotation="0 45 0" material='opacity: 0.8;' color="#4CC3D9">
+        <a-animation attribute="rotation" to="90 180 90" dur="9000" repeat="indefinite" easing="linear"></a-animation>
+      </a-box>
+      <a-marker-camera preset='hiro'></a-marker-camera>
+    </a-scene>
+
   </div>
   <div class="card-footer text-muted">
     Data : <span id="qrcode-data">No Data Detected</span>
@@ -39,6 +50,7 @@
 
 <script src="javascripts/instascan.min.js"></script>
 <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+<script src="javascripts/aframe-ar.js"></script>
 
 <script type="text/javascript">
   // using instanscan for qr code reader
@@ -48,6 +60,7 @@
     $('#qrcode-data').html(content);
     scanner.stop();
     $('#preview').hide();
+    $('#a-scene').show();
     if (content == 'blue') {
 
     } else if (content == 'green') {
@@ -80,6 +93,7 @@
   function resetEveryThing() {
     initCamera();
     $('#preview').show();
+    $('#a-scene').hide();
   }
 
   $('button#reset').click(function () {
