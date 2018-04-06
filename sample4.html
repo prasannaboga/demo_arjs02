@@ -20,12 +20,24 @@
     min-height: 500px;
     height: 85%;
   }
+
+  #preview-container {
+    margin: 0 auto;
+    height: 90%;
+  }
+
+  #preview {
+    width: 100%;
+    height: 100%;
+  }
 </style>
 
 <div class="card border-primary aframe-scene-card">
   <div class="card-header">Sample4</div>
   <div class="card-body">
-    <video id="preview"></video>
+    <div id="preview-container" class="border border-primary">
+      <video id="preview"></video>
+    </div>
   </div>
   <div class="card-footer text-muted">
     Data : <span id="qrcode-data">No Data Detected</span>
