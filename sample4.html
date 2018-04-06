@@ -60,6 +60,8 @@
   });
 
   function initCamera() {
+    setTimeout(function () {
+    }, 5000);
     Instascan.Camera.getCameras().then(function (cameras) {
       if (cameras.length > 0) {
 
