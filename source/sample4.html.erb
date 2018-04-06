@@ -1,0 +1,52 @@
+---
+title: Sample4
+---
+<style type="text/css">
+  .aframe-scene-card {
+    margin: 20px 0;
+    min-height: 500px;
+    height: 85%;
+  }
+</style>
+
+<div class="card border-primary aframe-scene-card">
+  <div class="card-header">Sample4</div>
+  <div class="card-body">
+    <video id="preview" class="img-fluid"></video>
+  </div>
+  <div class="card-footer text-muted">
+    Data : <span id="qrcode-data">No Data Detected</span>
+    <span class="float-right"><%= link_to 'Index', '/index.html' %></span>
+  </div>
+</div>
+
+<script src="javascripts/instascan.min.js"></script>
+<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+
+<script type="text/javascript">
+  // using instanscan for qr code reader
+  scanner = new Instascan.Scanner({video: document.getElementById('preview'), mirror: false});
+  scanner.addListener('scan', function (content) {
+    console.log(content);
+    $('#qrcode-data').html(content);
+    if (content == 'blue') {
+
+    } else if (content == 'green') {
+
+    } else if (content == 'red') {
+
+    } else {
+
+    }
+  });
+  Instascan.Camera.getCameras().then(function (cameras) {
+    if (cameras.length > 0) {
+      scanner.start(cameras[1]);
+    } else {
+      $('#qrcode-data').html('No cameras found.');
+    }
+  }).catch(function (e) {
+    //console.error(e);
+    $('#qrcode-data').html(e.message);
+  });
+</script>
