@@ -23,7 +23,9 @@
 </style>
 
 <div class="card border-primary aframe-scene-card">
-  <div class="card-header">Sample4 <button class="float-right" id="reset">Reset</button></div>
+  <div class="card-header">Sample4
+    <button class="float-right" id="reset">Reset</button>
+  </div>
   <div class="card-body">
 
     <video id="preview" class="border border-primary w-100"></video>
@@ -56,22 +58,25 @@
 
     }
   });
-  
-  var camera = '';
-  Instascan.Camera.getCameras().then(function (cameras) {
-    if (cameras.length > 0) {
-      camera = cameras[1]
-      scanner.start(camera);
-    } else {
-      $('#qrcode-data').html('No cameras found.');
-    }
-  }).catch(function (e) {
-    //console.error(e);
-    $('#qrcode-data').html(e.message);
-  });
+
+  function initCamera() {
+    Instascan.Camera.getCameras().then(function (cameras) {
+      if (cameras.length > 0) {
+
+        scanner.start(cameras[1]);
+      } else {
+        $('#qrcode-data').html('No cameras found.');
+      }
+    }).catch(function (e) {
+      //console.error(e);
+      $('#qrcode-data').html(e.message);
+    });
+  }
+
+  initCamera();
 
   function resetEveryThing() {
-    scanner.start(camera);
+    initCamera();
     $('#preview').show();
   }
 
