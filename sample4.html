@@ -23,7 +23,7 @@
 </style>
 
 <div class="card border-primary aframe-scene-card">
-  <div class="card-header">Sample4</div>
+  <div class="card-header">Sample4 <button class="float-right" id="reset">Reset</button></div>
   <div class="card-body">
 
     <video id="preview" class="border border-primary w-100"></video>
@@ -44,6 +44,8 @@
   scanner.addListener('scan', function (content) {
     console.log(content);
     $('#qrcode-data').html(content);
+    scanner.stop();
+    $('#preview').hide();
     if (content == 'blue') {
 
     } else if (content == 'green') {
@@ -63,6 +65,15 @@
   }).catch(function (e) {
     //console.error(e);
     $('#qrcode-data').html(e.message);
+  });
+
+  function resetEveryThing() {
+    scanner.start(cameras[1]);
+    $('#preview').show();
+  }
+
+  $('button#reset').click(function () {
+    resetEveryThing()
   });
 </script>
 
