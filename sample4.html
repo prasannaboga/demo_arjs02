@@ -56,9 +56,12 @@
 
     }
   });
+  
+  var camera = '';
   Instascan.Camera.getCameras().then(function (cameras) {
     if (cameras.length > 0) {
-      scanner.start(cameras[1]);
+      camera = cameras[1]
+      scanner.start(camera);
     } else {
       $('#qrcode-data').html('No cameras found.');
     }
@@ -68,7 +71,7 @@
   });
 
   function resetEveryThing() {
-    scanner.start(cameras[1]);
+    scanner.start(camera);
     $('#preview').show();
   }
 
