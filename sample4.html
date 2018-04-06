@@ -6,7 +6,7 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <!-- Use the title from a page's frontmatter if it has one -->
-  <title>Sample Project for QR Code with AR</title>
+  <title>Sample4</title>
   <link href="stylesheets/bootstrap.css" rel="stylesheet" />
   <link href="stylesheets/site.css" rel="stylesheet" />
   <script src="javascripts/jquery-3.3.1.js"></script>
@@ -14,27 +14,34 @@
 </head>
 <body>
 <div class="container-fluid">
-  <script src="javascripts/instascan.min.js"></script>
+  <style type="text/css">
+  .aframe-scene-card {
+    margin: 20px 0;
+    min-height: 500px;
+    height: 85%;
+  }
+</style>
+
+<div class="card border-primary aframe-scene-card">
+  <div class="card-header">Sample4</div>
+  <div class="card-body">
+    <video id="preview" class="img-fluid"></video>
+  </div>
+  <div class="card-footer text-muted">
+    Data : <span id="qrcode-data">No Data Detected</span>
+    <span class="float-right"><a href="./">Index</a></span>
+  </div>
+</div>
+
+<script src="javascripts/instascan.min.js"></script>
 <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
-
-<div class="preview-container border border-primary">
-  <video id="preview" class="img-fluid"></video>
-</div>
-<div class="alert alert-dismissible alert-info display-data">
-  Date : <span id="qrcode-data">No Data Detected</span>
-  <span class="float-right"><a href="./">Index</a></span>
-</div>
-
-<a-scene id="a-scene">
-
-</a-scene>
 
 <script type="text/javascript">
   // using instanscan for qr code reader
   scanner = new Instascan.Scanner({video: document.getElementById('preview'), mirror: false});
   scanner.addListener('scan', function (content) {
     console.log(content);
-    document.getElementById('qrcode-data').innerHTML = content;
+    $('#qrcode-data').html(content);
     if (content == 'blue') {
 
     } else if (content == 'green') {
@@ -44,19 +51,16 @@
     } else {
 
     }
-    scanner.stop();
-    $('#preview').hide();
   });
   Instascan.Camera.getCameras().then(function (cameras) {
     if (cameras.length > 0) {
       scanner.start(cameras[1]);
     } else {
-      console.error('No cameras found.');
-      document.getElementById('qrcode-data').innerHTML = 'No cameras found.'
+      $('#qrcode-data').html('No cameras found.');
     }
   }).catch(function (e) {
     //console.error(e);
-    document.getElementById('qrcode-data').innerHTML = e.message
+    $('#qrcode-data').html(e.message);
   });
 </script>
 
