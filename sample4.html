@@ -22,7 +22,7 @@
 
 <script type="text/javascript">
   video = document.getElementById('video');
-  navigator.mediaDevices.getUserMedia({video: { facingMode: "environment" }, audio: false})
+  navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}, audio: false})
     .then(function (stream) {
       video.srcObject = stream;
       video.play();
@@ -31,6 +31,13 @@
       console.log("An error occured! " + err);
     });
 
+  width = $('#three-scene').width();
+  height = $('#three-scene').height();
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+  var renderer = new THREE.WebGLRenderer();
+  renderer.setSize(width, height);
 </script>
 
 </div>
