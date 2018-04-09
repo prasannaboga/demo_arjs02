@@ -16,7 +16,7 @@
 <div class="container-fluid">
   <div id="three-scene" class="border border-primary w-100 h-100">
   <a-scene id="a-scene" arjs='debug: false; trackingMethod: best;debugUIEnabled: false;' cursor="rayOrigin: mouse" vr-mode-ui="enabled: false">
-    <a-box position='0 0 0' rotation="0 45 30" material='opacity: 0.8;' color="red" scale="3 3 3"></a-box>
+    <a-entity id="my-box"></a-entity>
     <a-marker-camera preset='hiro'></a-marker-camera>
   </a-scene>
 </div>
@@ -25,29 +25,7 @@
 <script src="javascripts/aframe-ar.js"></script>
 
 <script type="text/javascript">
-
-  AFRAME.registerComponent('qr-code-box', {
-    schema: {
-      bar: {type: 'number'},
-      baz: {type: 'string'}
-    },
-
-    init: function () {
-      // Do something when component first attached.
-    },
-
-    update: function () {
-      // Do something when component's data is updated.
-    },
-
-    remove: function () {
-      // Do something the component or its entity is detached.
-    },
-
-    tick: function (time, timeDelta) {
-      // Do something on every scene tick or frame.
-    }
-  });
+  $('#my-box').html('<a-box position=\'0 0 0\' rotation="0 45 30" material=\'opacity: 0.8;\' color="red" scale="3 3 3"></a-box>');
 </script>
 
 </div>
