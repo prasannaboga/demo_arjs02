@@ -1,0 +1,101 @@
+---
+title: threejs + QR Code + WebCam background
+---
+
+<style>
+
+</style>
+
+<div id="three-scene-card" class="card border-primary w-100 h-100">
+  <div class="card-header">threejs.org creating-a-scene + QR Code</div>
+  <div class="card-body" id="three-canvas">
+  </div>
+  <div class="card-footer">
+    Data :
+    <scan id="qrcode-data">No data detected</scan>
+  </div>
+</div>
+
+<script src="javascripts/instascan.min.js"></script>
+<script src="javascripts/three.js"></script>
+<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+<script src="https://threejs.org/examples/js/loaders/GLTFLoader.js"></script>
+
+<script type="text/javascript">
+  sceneWidth = $('#three-canvas').width();
+  sceneHeight = $('#three-canvas').height();
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(75, sceneWidth / sceneHeight, 1, 1000);
+  var renderer = new THREE.WebGLRenderer({alpha: true});
+  renderer.setClearAlpha(0.0);
+  renderer.gammaOutput = true;
+  //renderer.setClearColor(new THREE.Color('lightgrey'), 1)
+  renderer.setSize(sceneWidth, sceneHeight);
+  $('#three-canvas').html(renderer.domElement);
+
+  //  var geometry = new THREE.BoxGeometry(2, 2, 2);
+  //  var material = new THREE.MeshBasicMaterial({color: 'green'});
+  //  var cube = new THREE.Mesh(geometry, material);
+  //  scene.add(cube);
+
+  var controls = new THREE.OrbitControls(camera);
+  controls.update();
+
+  //TODO need to learn
+  var path = 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/cube/Bridge2/';
+  var format = '.jpg';
+  var envMap = new THREE.CubeTextureLoader().load([
+    path + 'posx' + format, path + 'negx' + format,
+    path + 'posy' + format, path + 'negy' + format,
+    path + 'posz' + format, path + 'negz' + format
+  ]);
+
+  scene = new THREE.Scene();
+  scene.background = envMap;
+
+  //TODO need to learn
+  light = new THREE.HemisphereLight(0xbbbbff, 0x444422);
+  light.position.set(0, 1, 0);
+  scene.add(light);
+
+  var loader = new THREE.GLTFLoader();
+  loader.load(
+    // resource URL
+    'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF/Duck.gltf',
+    // called when the resource is loaded
+    function (gltf) {
+      gltf.scene.traverse(function (child) {
+        if (child.isMesh) {
+          child.material.envMap = envMap;
+        }
+      });
+      scene.add(gltf.scene);
+    },
+    // called when loading is in progresses
+    function (xhr) {
+      console.log(xhr.loaded);
+    },
+    // called when loading has errors
+    function (error) {
+      console.log('An error happened');
+    }
+  );
+
+  camera.position.z = 5;
+
+  var animate = function () {
+    requestAnimationFrame(animate);
+    //cube.rotation.x += 0.1;
+    //cube.rotation.y += 0.1;
+    controls.update();
+    renderer.render(scene, camera);
+  };
+  animate();
+
+  window.addEventListener('resize', function () {
+    renderer.setSize(sceneWidth, sceneHeight);
+    camera.aspect = sceneWidth / sceneHeight;
+    camera.updateProjectionMatrix();
+  });
+</script>

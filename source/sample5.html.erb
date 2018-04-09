@@ -24,7 +24,7 @@ title: threejs.org creating-a-scene + QR Code
     Data : <scan id="qrcode-data">No data detected</scan>
   </div>
 </div>
-<video id="preview"></video>
+<!--<video id="preview"></video>-->
 
 <script src="javascripts/instascan.min.js"></script>
 <script src="javascripts/three.js"></script>
@@ -36,6 +36,7 @@ title: threejs.org creating-a-scene + QR Code
   var camera = new THREE.PerspectiveCamera(75, sceneWidth / sceneHeight, 1, 1000);
   var renderer = new THREE.WebGLRenderer();
 
+  renderer.setClearColor(new THREE.Color('lightgrey'), 1)
   renderer.setSize(sceneWidth, sceneHeight);
 
   $('#three-scene').append(renderer.domElement);
@@ -49,13 +50,14 @@ title: threejs.org creating-a-scene + QR Code
 
   var animate = function () {
     requestAnimationFrame(animate);
-    /*cube.rotation.x += 0.1;
-    cube.rotation.y += 0.1;*/
+    //cube.rotation.x += 0.1;
+    //.rotation.y += 0.1;
     renderer.render(scene, camera);
   };
   animate();
 
-  scanner = new Instascan.Scanner({video: document.getElementById('preview'), mirror: false});
+  //scanner = new Instascan.Scanner({video: document.getElementById('preview'), mirror: false});
+  scanner = new Instascan.Scanner({mirror: false});
   scanner.addListener('scan', function (content) {
     console.log(content);
     document.getElementById('qrcode-data').innerHTML = content;
