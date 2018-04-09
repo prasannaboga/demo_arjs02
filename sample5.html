@@ -37,6 +37,8 @@
     Data : <scan id="qrcode-data">No data detected</scan>
   </div>
 </div>
+
+<script src="javascripts/instascan.min.js"></script>
 <script src="javascripts/three.js"></script>
 <script type="text/javascript">
   sceneWidth = $('#three-scene').width() - 15;
@@ -65,7 +67,7 @@
   };
   animate();
 
-  scanner = new Instascan.Scanner();
+  scanner = new Instascan.Scanner({mirror: false});
   scanner.addListener('scan', function (content) {
     console.log(content);
     document.getElementById('qrcode-data').innerHTML = content;
