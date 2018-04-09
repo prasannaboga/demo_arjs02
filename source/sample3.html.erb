@@ -12,7 +12,7 @@ title: Sample03
 <div class="card border-primary aframe-scene-card" hidden>
   <div class="card-header">Sample03</div>
   <div class="card-body" id="aframe-scene">
-    <a-scene embedded arjs>
+    <a-scene embedded arjs='debug: false; trackingMethod: best;' raycaster="far: 100; objects: [link];" cursor="rayOrigin: mouse">
       <a-box position="-1 0.5 -3" rotation="0 45 0" material='opacity: 0.8;' color="#4CC3D9">
         <a-animation attribute="rotation" to="90 180 90" dur="9000" repeat="indefinite" easing="linear"></a-animation>
       </a-box>
