@@ -14,30 +14,40 @@
 </head>
 <body>
 <div class="container-fluid">
-  <div id="three-scene" class="w-100 h-100">
-  <video id="video"></video>
+  <div id="three-scene" class="border border-primary w-100 h-100">
+  <a-scene id="a-scene" arjs='debug: false; trackingMethod: best;debugUIEnabled: false;' cursor="rayOrigin: mouse" vr-mode-ui="enabled: false">
+    <a-box position='0 0 0' rotation="0 45 30" material='opacity: 0.8;' color="red" scale="3 3 3"></a-box>
+    <a-marker-camera preset='hiro'></a-marker-camera>
+  </a-scene>
 </div>
 
-<script src="javascripts/three.js"></script>
+<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+<script src="javascripts/aframe-ar.js"></script>
 
 <script type="text/javascript">
-  video = document.getElementById('video');
-  navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}, audio: false})
-    .then(function (stream) {
-      video.srcObject = stream;
-      video.play();
-    })
-    .catch(function (err) {
-      console.log("An error occured! " + err);
-    });
 
-  width = $('#three-scene').width();
-  height = $('#three-scene').height();
+  AFRAME.registerComponent('qr-code-box', {
+    schema: {
+      bar: {type: 'number'},
+      baz: {type: 'string'}
+    },
 
-  var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-  var renderer = new THREE.WebGLRenderer();
-  renderer.setSize(width, height);
+    init: function () {
+      // Do something when component first attached.
+    },
+
+    update: function () {
+      // Do something when component's data is updated.
+    },
+
+    remove: function () {
+      // Do something the component or its entity is detached.
+    },
+
+    tick: function (time, timeDelta) {
+      // Do something on every scene tick or frame.
+    }
+  });
 </script>
 
 </div>
