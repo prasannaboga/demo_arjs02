@@ -17,6 +17,8 @@
   <style type="text/css">
   .card-body {
     padding: 0;
+    height: 100%;
+    width: 100%;
   }
 
 </style>
@@ -26,9 +28,9 @@
     <button class="float-right" id="reset">Reset</button>
   </div>
   <div class="card-body">
-    <video id="preview" class="w-100"></video>
-    <a-scene id="a-scene" embedded>
-      <a-box position="-1 3 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
+    <!--<video id="preview" class="w-100"></video>-->
+    <a-scene id="a-scene">
+      <a-box position="0 0 0" rotation="0 45 0" color="#4CC3D9"></a-box>
     </a-scene>
   </div>
   <div class="card-footer text-muted">
@@ -43,7 +45,7 @@
 
 <script type="text/javascript">
   // using instanscan for qr code reader
-  scanner = new Instascan.Scanner({video: document.getElementById('preview'), mirror: false});
+  scanner = new Instascan.Scanner({mirror: false});
   scanner.addListener('scan', function (content) {
     console.log(content);
     $('#qrcode-data').html(content);
