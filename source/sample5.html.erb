@@ -19,17 +19,17 @@ title: threejs.org creating-a-scene + QR Code
 <div class="card border-primary three-scene-card">
   <div class="card-header">threejs.org creating-a-scene + QR Code</div>
   <div class="card-body" id="three-scene">
-
   </div>
   <div class="card-footer">
     Data : <scan id="qrcode-data">No data detected</scan>
   </div>
 </div>
+<video id="preview"></video>
 
 <script src="javascripts/instascan.min.js"></script>
 <script src="javascripts/three.js"></script>
 <script type="text/javascript">
-  sceneWidth = $('#three-scene').width() - 15;
+  sceneWidth = $('#three-scene').width();
   sceneHeight = $('#three-scene').height();
 
   var scene = new THREE.Scene();
@@ -38,10 +38,10 @@ title: threejs.org creating-a-scene + QR Code
 
   renderer.setSize(sceneWidth, sceneHeight);
 
-  $('#three-scene').html(renderer.domElement);
+  $('#three-scene').append(renderer.domElement);
 
   var geometry = new THREE.BoxGeometry(2, 2, 2);
-  var material = new THREE.MeshBasicMaterial({color: 'black'});
+  var material = new THREE.MeshBasicMaterial({color: 'red'});
   var cube = new THREE.Mesh(geometry, material);
   scene.add(cube);
 
@@ -55,7 +55,7 @@ title: threejs.org creating-a-scene + QR Code
   };
   animate();
 
-  scanner = new Instascan.Scanner({mirror: false});
+  scanner = new Instascan.Scanner({video: document.getElementById('preview'), mirror: false});
   scanner.addListener('scan', function (content) {
     console.log(content);
     document.getElementById('qrcode-data').innerHTML = content;
