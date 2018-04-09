@@ -36,7 +36,7 @@
     Data : <scan id="qrcode-data">No data detected</scan>
   </div>
 </div>
-
+<!--<video id="preview"></video>-->
 
 <script src="javascripts/instascan.min.js"></script>
 <script src="javascripts/three.js"></script>
@@ -61,12 +61,13 @@
 
   var animate = function () {
     requestAnimationFrame(animate);
-    /*cube.rotation.x += 0.1;
-    cube.rotation.y += 0.1;*/
+    cube.rotation.x += 0.1;
+    cube.rotation.y += 0.1;
     renderer.render(scene, camera);
   };
   animate();
 
+  //scanner = new Instascan.Scanner({video: document.getElementById('preview'), mirror: false});
   scanner = new Instascan.Scanner({mirror: false});
   scanner.addListener('scan', function (content) {
     console.log(content);
