@@ -16,7 +16,11 @@
 <div class="container-fluid">
   <div id="three-scene" class="border border-primary w-100 h-100">
   <a-scene id="a-scene" arjs='debug: false; trackingMethod: best;debugUIEnabled: false;' cursor="rayOrigin: mouse" vr-mode-ui="enabled: false">
-    <a-entity id="my-entity"></a-entity>
+    <a-entity id="my-entity">
+      <a-box position="0 0 0" rotation="0 45 0" material='opacity: 0.8;' color="red">
+
+      </a-box>
+    </a-entity>
     <a-marker-camera preset='hiro'></a-marker-camera>
   </a-scene>
 </div>
@@ -25,12 +29,12 @@
 <script src="javascripts/aframe-ar.js"></script>
 
 <script type="text/javascript">
-  var entityEl = document.getElementById('my-entity');
+/*  var entityEl = document.getElementById('my-entity');
   var boxEl = document.createElement('a-box');
   boxEl.setAttribute('position', {x: 0, y: 0, z: 0});
   boxEl.setAttribute('material', {opacity: 0.8});
   boxEl.setAttribute('color', 'red');
-  entityEl.appendChild(boxEl);
+  entityEl.appendChild(boxEl);*/
 </script>
 
 </div>
