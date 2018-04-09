@@ -20,7 +20,6 @@
     height: 100%;
     width: 100%;
   }
-
 </style>
 
 <div class="card border-primary">
@@ -29,8 +28,9 @@
   </div>
   <div class="card-body">
     <!--<video id="preview" class="w-100"></video>-->
-    <a-scene id="a-scene">
+    <a-scene id="a-scene" embedded arjs='debug: false; trackingMethod: best;' raycaster="far: 100; objects: [link];" cursor="rayOrigin: mouse">
       <a-box position="0 0 0" rotation="0 45 0" color="#4CC3D9"></a-box>
+      <a-marker-camera preset='hiro'></a-marker-camera>
     </a-scene>
   </div>
   <div class="card-footer text-muted">
@@ -41,7 +41,7 @@
 
 <script src="javascripts/instascan.min.js"></script>
 <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
-<!--<script src="javascripts/aframe-ar.js"></script>-->
+<script src="javascripts/aframe-ar.js"></script>
 
 <script type="text/javascript">
   // using instanscan for qr code reader
@@ -65,7 +65,6 @@
     }, 5000);
     Instascan.Camera.getCameras().then(function (cameras) {
       if (cameras.length > 0) {
-
         scanner.start(cameras[1]);
       } else {
         $('#qrcode-data').html('No cameras found.');
@@ -76,7 +75,7 @@
     });
   }
 
-  initCamera();
+  //initCamera();
 
   function resetEveryThing() {
     //initCamera();
