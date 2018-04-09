@@ -14,18 +14,43 @@
 </head>
 <body>
 <div class="container-fluid">
-  <!--sourceType: webcam; -->
-<a-scene id="a-scene" arjs='debug: false; trackingMethod: best;debugUIEnabled: false;' cursor="rayOrigin: mouse" vr-mode-ui="enabled: false">
-  <a-box position='0 0 0' rotation="0 45 45" material='opacity: 0.8;' color="red"  scale="3 3 3"></a-box>
-  <a-marker-camera preset='hiro'></a-marker-camera>
-</a-scene>
+  <div id="three-scene" class="w-100 h-100">
 
+</div>
 
-<!--<script src="javascripts/instascan.min.js"></script>-->
-<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
-<script src="javascripts/aframe-ar.js"></script>
+<script src="javascripts/three.js"></script>
+<script src="javascripts/three.ar.js"></script>
 
 <script type="text/javascript">
+
+  THREE.ARUtils.getARDisplay().then(init);
+
+  function init(display) {
+    vrDisplay = display;
+    // Set up three.js scene
+    renderer = new THREE.WebGLRenderer({alpha: true});
+    scene = new THREE.Scene();
+
+    // ...
+
+    // Set up our ARView with ARPerspectiveCamera
+    arView = new THREE.ARView(vrDisplay, renderer);
+    camera = new THREE.ARPerspectiveCamera(vrDisplay, 60, window.innerWidth / window.innerHeight, vrDisplay.depthNear, vrDisplay.depthFar);
+    vrControls = new THREE.VRControls(camera);
+
+    update();
+  }
+
+  function update() {
+    // Update our controls/camera, the ARView rendering,
+    // and our three.js scene
+    vrControls.update();
+    arView.render();
+    renderer.clearDepth();
+    renderer.render(scene, camera);
+    vrDisplay.requestAnimationFrame(update);
+  }
+
 
 </script>
 
