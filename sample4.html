@@ -15,42 +15,56 @@
 <body>
 <div class="container-fluid">
   <div id="three-scene" class="w-100 h-100">
-
+  <video id="video" style="display:none"></video>
 </div>
 
 <script src="javascripts/three.js"></script>
-<script src="javascripts/three.ar.js"></script>
 
 <script type="text/javascript">
+  let camera, scene, renderer, video;
 
-  THREE.ARUtils.getARDisplay().then(init);
+  init();
+  animate();
 
-  function init(display) {
-    vrDisplay = display;
-    // Set up three.js scene
-    renderer = new THREE.WebGLRenderer({alpha: true});
+  function init() {
+
+    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 10);
+    camera.position.z = 1;
+
     scene = new THREE.Scene();
 
-    // ...
+    video = document.getElementById('video');
+    const texture = new THREE.VideoTexture(video);
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.format = THREE.RGBFormat;
 
-    // Set up our ARView with ARPerspectiveCamera
-    arView = new THREE.ARView(vrDisplay, renderer);
-    camera = new THREE.ARPerspectiveCamera(vrDisplay, 60, window.innerWidth / window.innerHeight, vrDisplay.depthNear, vrDisplay.depthFar);
-    vrControls = new THREE.VRControls(camera);
+    const geometry = new THREE.PlaneBufferGeometry();
+    const material = new THREE.MeshBasicMaterial({map: texture});
 
-    update();
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    initWebcamInput();
   }
 
-  function update() {
-    // Update our controls/camera, the ARView rendering,
-    // and our three.js scene
-    vrControls.update();
-    arView.render();
-    renderer.clearDepth();
+  function initWebcamInput() {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({video: true}).then(stream = > {
+        video.src = window.URL.createObjectURL(stream);
+        video.play();
+      });
+    }
+  }
+
+  function animate() {
+    requestAnimationFrame(animate);
     renderer.render(scene, camera);
-    vrDisplay.requestAnimationFrame(update);
   }
-
 
 </script>
 
