@@ -48,6 +48,7 @@
   var camera = new THREE.PerspectiveCamera(75, sceneWidth / sceneHeight, 1, 1000);
   var renderer = new THREE.WebGLRenderer();
 
+  renderer.setClearColor(new THREE.Color('lightgrey'), 1)
   renderer.setSize(sceneWidth, sceneHeight);
 
   $('#three-scene').append(renderer.domElement);
@@ -61,8 +62,8 @@
 
   var animate = function () {
     requestAnimationFrame(animate);
-    cube.rotation.x += 0.1;
-    cube.rotation.y += 0.1;
+    //cube.rotation.x += 0.1;
+    //.rotation.y += 0.1;
     renderer.render(scene, camera);
   };
   animate();
