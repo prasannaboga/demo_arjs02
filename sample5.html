@@ -31,12 +31,12 @@
 <div class="card border-primary three-scene-card">
   <div class="card-header">threejs.org creating-a-scene + QR Code</div>
   <div class="card-body" id="three-scene">
-    <video id="preview"></video>
   </div>
   <div class="card-footer">
     Data : <scan id="qrcode-data">No data detected</scan>
   </div>
 </div>
+<video id="preview"></video>
 
 <script src="javascripts/instascan.min.js"></script>
 <script src="javascripts/three.js"></script>
@@ -50,10 +50,10 @@
 
   renderer.setSize(sceneWidth, sceneHeight);
 
-  $('#preview').append(renderer.domElement);
+  $('#three-scene').append(renderer.domElement);
 
   var geometry = new THREE.BoxGeometry(2, 2, 2);
-  var material = new THREE.MeshBasicMaterial({color: 'black'});
+  var material = new THREE.MeshBasicMaterial({color: 'red'});
   var cube = new THREE.Mesh(geometry, material);
   scene.add(cube);
 
