@@ -137,6 +137,11 @@
           console.log('An error happened');
         }
       );
+    } else if (objs[qr_code_value]['type'] == 'object3D')  {
+      var geometry = new THREE.BoxGeometry(2, 2, 2);
+      var material = new THREE.MeshBasicMaterial({color: qr_code_value});
+      var cube = new THREE.Mesh(geometry, material);
+      scene.add(cube);
     } else {
       var geometry = new THREE.BoxGeometry(2, 2, 2);
       var material = new THREE.MeshBasicMaterial({color: qr_code_value});
@@ -148,7 +153,7 @@
   }
 
   function clearScene(scene) {
-    var objsToRemove = _.rest(scene.children, 1);
+    var objsToRemove = _.rest(scene.children, 0);
     _.each(objsToRemove, function (object) {
       scene.remove(object);
     });
