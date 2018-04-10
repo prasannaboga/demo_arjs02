@@ -15,4 +15,4 @@
 
 | duck | cesiumman |
 |---|---|
-|![duck](https://prasannaboga.github.io/demo_arjs02/images/duck.png "duck")|![cesiumman](https://prasannaboga.github.io/demo_arjs02/images/cesiumman.png "cesiumman")|
+|![duck](https://raw.githubusercontent.com/prasannaboga/demo_arjs02/master/source/images/duck.png "duck")|![cesiumman](https://prasannaboga.github.io/demo_arjs02/images/cesiumman.png "cesiumman")|
