@@ -66,13 +66,10 @@
   scanner.addListener('scan', function (content) {
     console.log(content);
     document.getElementById('qrcode-data').innerHTML = content;
-    if (old_content != content) {
-      clearScene(scene);
-      setTimeout(function () {
-      }, 5000);
-      objectLoader(content);
-      old_content == content;
-    }
+    clearScene(scene);
+    /*  setTimeout(function () {
+      }, 5000);*/
+    objectLoader(content);
   });
   Instascan.Camera.getCameras().then(function (cameras) {
     if (cameras.length > 0) {
