@@ -41,6 +41,7 @@
 
 <script src="javascripts/instascan.min.js"></script>
 <script src="javascripts/three.js"></script>
+<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 <script type="text/javascript">
   sceneWidth = $('#three-scene').width();
   sceneHeight = $('#three-scene').height();
@@ -54,6 +55,9 @@
 
   $('#three-scene').append(renderer.domElement);
 
+    var controls = new THREE.OrbitControls(camera);
+  controls.update();
+
   var geometry = new THREE.BoxGeometry(2, 2, 2);
   var material = new THREE.MeshBasicMaterial({color: 'red'});
   var cube = new THREE.Mesh(geometry, material);
@@ -63,8 +67,9 @@
 
   var animate = function () {
     requestAnimationFrame(animate);
-    //cube.rotation.x += 0.1;
-    //.rotation.y += 0.1;
+    cube.rotation.x += 0.001;
+    cube.rotation.y += 0.001;
+    controls.update();
     renderer.render(scene, camera);
   };
   animate();
