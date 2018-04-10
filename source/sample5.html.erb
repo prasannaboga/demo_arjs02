@@ -28,6 +28,7 @@ title: threejs.org creating-a-scene + QR Code
 
 <script src="javascripts/instascan.min.js"></script>
 <script src="javascripts/three.js"></script>
+<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 <script type="text/javascript">
   sceneWidth = $('#three-scene').width();
   sceneHeight = $('#three-scene').height();
@@ -41,6 +42,9 @@ title: threejs.org creating-a-scene + QR Code
 
   $('#three-scene').append(renderer.domElement);
 
+  var controls = new THREE.OrbitControls(camera);
+  controls.update();
+
   var geometry = new THREE.BoxGeometry(2, 2, 2);
   var material = new THREE.MeshBasicMaterial({color: 'red'});
   var cube = new THREE.Mesh(geometry, material);
@@ -50,8 +54,9 @@ title: threejs.org creating-a-scene + QR Code
 
   var animate = function () {
     requestAnimationFrame(animate);
-    //cube.rotation.x += 0.1;
-    //.rotation.y += 0.1;
+    cube.rotation.x += 0.001;
+    cube.rotation.y += 0.001;
+    controls.update();
     renderer.render(scene, camera);
   };
   animate();
@@ -68,7 +73,7 @@ title: threejs.org creating-a-scene + QR Code
     } else if (content == 'red') {
       cube.material.color = new THREE.Color('red');
     } else {
-      cube.material.color = new THREE.Color('orange');
+      cube.material.color = new THREE.Color(content);
     }
   });
   Instascan.Camera.getCameras().then(function (cameras) {
