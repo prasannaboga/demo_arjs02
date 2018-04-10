@@ -145,11 +145,7 @@
       var cube = new THREE.Mesh(geometry, material);
       scene.add(cube);
     } else {
-      alert(qr_code_value)
-      var geometry = new THREE.BoxGeometry(2, 2, 2);
-      var material = new THREE.MeshBasicMaterial({color: qr_code_value});
-      var cube = new THREE.Mesh(geometry, material);
-      scene.add(cube);
+      alert('no data');
     }
 
     animate();
