@@ -61,13 +61,18 @@
   //scene.background = envMap;*/
 
   camera.position.z = 5;
+  var old_content = '';
   scanner = new Instascan.Scanner({mirror: false});
   scanner.addListener('scan', function (content) {
     console.log(content);
     document.getElementById('qrcode-data').innerHTML = content;
-    clearScene(scene);
-    setTimeout(function(){  }, 5000);
-    objectLoader(content);
+    if (old_content != content) {
+      clearScene(scene);
+      setTimeout(function () {
+      }, 5000);
+      objectLoader(content);
+      old_content == content;
+    }
   });
   Instascan.Camera.getCameras().then(function (cameras) {
     if (cameras.length > 0) {
@@ -137,7 +142,7 @@
           console.log('An error happened');
         }
       );
-    } else if (objs[qr_code_value]['type'] == 'object3D')  {
+    } else if (objs[qr_code_value]['type'] == 'object3D') {
       var geometry = new THREE.BoxGeometry(2, 2, 2);
       var material = new THREE.MeshBasicMaterial({color: qr_code_value});
       var cube = new THREE.Mesh(geometry, material);
