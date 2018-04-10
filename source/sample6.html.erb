@@ -34,68 +34,98 @@ title: threejs + QR Code + WebCam background
   renderer.setSize(sceneWidth, sceneHeight);
   $('#three-canvas').html(renderer.domElement);
 
-  //  var geometry = new THREE.BoxGeometry(2, 2, 2);
-  //  var material = new THREE.MeshBasicMaterial({color: 'green'});
-  //  var cube = new THREE.Mesh(geometry, material);
-  //  scene.add(cube);
-
   var controls = new THREE.OrbitControls(camera);
   controls.update();
 
   //TODO need to learn
-  var path = 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/cube/Bridge2/';
+  /*var path = 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/cube/Bridge2/';
   var format = '.jpg';
   var envMap = new THREE.CubeTextureLoader().load([
     path + 'posx' + format, path + 'negx' + format,
     path + 'posy' + format, path + 'negy' + format,
     path + 'posz' + format, path + 'negz' + format
   ]);
+  //scene.background = envMap;*/
 
-  scene = new THREE.Scene();
-  scene.background = envMap;
-
-  //TODO need to learn
-  light = new THREE.HemisphereLight(0xbbbbff, 0x444422);
-  light.position.set(0, 1, 0);
-  scene.add(light);
-
-  var loader = new THREE.GLTFLoader();
-  loader.load(
-    // resource URL
-    'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF/Duck.gltf',
-    // called when the resource is loaded
-    function (gltf) {
-      gltf.scene.traverse(function (child) {
-        if (child.isMesh) {
-          child.material.envMap = envMap;
-        }
-      });
-      scene.add(gltf.scene);
-    },
-    // called when loading is in progresses
-    function (xhr) {
-      console.log(xhr.loaded);
-    },
-    // called when loading has errors
-    function (error) {
-      console.log('An error happened');
-    }
-  );
 
   camera.position.z = 5;
 
   var animate = function () {
     requestAnimationFrame(animate);
-    //cube.rotation.x += 0.1;
-    //cube.rotation.y += 0.1;
     controls.update();
     renderer.render(scene, camera);
   };
   animate();
 
-  window.addEventListener('resize', function () {
+  function objectLoader(qr_code_value) {
+    objs = {
+      'duck': {
+        type: 'gltf',
+        url: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF/Duck.gltf'
+      },
+      'cesiumman': {
+        type: 'gltf',
+        url: 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF/CesiumMan.gltf'
+      },
+      'blue': {
+        type: 'object3D'
+      },
+      'red': {
+        type: 'object3D'
+      },
+      'green': {
+        type: 'object3D'
+      }
+    };
+
+    if (objs[qr_code_value]['type'] == 'gltf') {
+      //TODO need to learn
+      light = new THREE.HemisphereLight(0xbbbbff, 0x444422);
+      light.position.set(0, 1, 0);
+      scene.add(light);
+
+      var loader = new THREE.GLTFLoader();
+      loader.load(
+        // resource URL
+        objs[qr_code_value]['url'],
+        // called when the resource is loaded
+        function (gltf) {
+          /*gltf.scene.traverse(function (child) {
+            if (child.isMesh) {
+              child.material.envMap = envMap;
+            }
+          });*/
+          scene.add(gltf.scene);
+        },
+        // called when loading is in progresses
+        function (xhr) {
+          console.log(xhr.loaded);
+        },
+        // called when loading has errors
+        function (error) {
+          console.log('An error happened');
+        }
+      );
+    } else {
+      var geometry = new THREE.BoxGeometry(2, 2, 2);
+      var material = new THREE.MeshBasicMaterial({color: qr_code_value});
+      var cube = new THREE.Mesh(geometry, material);
+      scene.add(cube);
+    }
+
+    animate();
+  }
+
+  function clearScene(scene) {
+    var objsToRemove = _.rest(scene.children, 1);
+    _.each(objsToRemove, function (object) {
+      scene.remove(object);
+    });
+  }
+
+  /*window.addEventListener('resize', function () {
     renderer.setSize(sceneWidth, sceneHeight);
     camera.aspect = sceneWidth / sceneHeight;
     camera.updateProjectionMatrix();
-  });
+  });*/
 </script>
