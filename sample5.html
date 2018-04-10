@@ -81,7 +81,7 @@
     } else if (content == 'red') {
       cube.material.color = new THREE.Color('red');
     } else {
-      cube.material.color = new THREE.Color('orange');
+      cube.material.color = new THREE.Color(content);
     }
   });
   Instascan.Camera.getCameras().then(function (cameras) {
