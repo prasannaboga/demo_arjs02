@@ -60,8 +60,26 @@
   ]);
   //scene.background = envMap;*/
 
-
   camera.position.z = 5;
+  scanner = new Instascan.Scanner({mirror: false});
+  scanner.addListener('scan', function (content) {
+    console.log(content);
+    document.getElementById('qrcode-data').innerHTML = content;
+    clearScene(scene);
+    setTimeout(function(){  }, 5000);
+    objectLoader(qr_code_value);
+  });
+  Instascan.Camera.getCameras().then(function (cameras) {
+    if (cameras.length > 0) {
+      scanner.start(cameras[1]);
+    } else {
+      console.error('No cameras found.');
+      document.getElementById('qrcode-data').innerHTML = 'No cameras found.'
+    }
+  }).catch(function (e) {
+    //console.error(e);
+    document.getElementById('qrcode-data').innerHTML = e.message
+  });
 
   var animate = function () {
     requestAnimationFrame(animate);
