@@ -67,7 +67,7 @@
     document.getElementById('qrcode-data').innerHTML = content;
     clearScene(scene);
     setTimeout(function(){  }, 5000);
-    objectLoader(qr_code_value);
+    objectLoader(content);
   });
   Instascan.Camera.getCameras().then(function (cameras) {
     if (cameras.length > 0) {
