@@ -9,10 +9,10 @@
 
 | grey | pink | yellow |
 |---|---|---|
-|![alt text](https://prasannaboga.github.io/demo_arjs02/images/grey.png "grey")|![alt text](https://prasannaboga.github.io/demo_arjs02/images/pink.png "pink")|![alt text](https://prasannaboga.github.io/demo_arjs02/images/yellow.png "yellow")
+|![grey](https://prasannaboga.github.io/demo_arjs02/images/grey.png "grey")|![pink](https://prasannaboga.github.io/demo_arjs02/images/pink.png "pink")|![yellow](https://prasannaboga.github.io/demo_arjs02/images/yellow.png "yellow")
 
 ---
 
 | duck | cesiumman |
 |---|---|
-|![alt text](https://prasannaboga.github.io/demo_arjs02/images/duck.png "duck")|![alt text](https://prasannaboga.github.io/demo_arjs02/images/cesiumman.png "cesiumman")|
+|![duck](https://prasannaboga.github.io/demo_arjs02/images/duck.png "duck")|![cesiumman](https://prasannaboga.github.io/demo_arjs02/images/cesiumman.png "cesiumman")|
