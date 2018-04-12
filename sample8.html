@@ -39,7 +39,7 @@
     var camVideo = document.getElementById('camvideo');
     camVideo.width = sceneWidth;
     camVideo.height = sceneHeight;
-    navigator.mediaDevices.getUserMedia({video: {exact: "environment"}, audio: false})
+    navigator.mediaDevices.getUserMedia({video: { facingMode: { exact: "environment" } }, audio: false})
       .then(function (stream) {
         camVideo.srcObject = stream;
         camVideo.play();
@@ -115,14 +115,14 @@
     };
     animate();
 
-    /*scanner = new Instascan.Scanner({video: camVideo, mirror: false});
+    scanner = new Instascan.Scanner({video: document.getElementById('preview'), mirror: false});
     scanner.addListener('scan', function (content) {
       console.log(content);
       $('#qrcode-data').html(content);
       cube.material.color = new THREE.Color(content);
     });
 
-    Instascan.Camera.getCameras().then(function (cameras) {
+    /*Instascan.Camera.getCameras().then(function (cameras) {
       if (cameras.length > 0) {
         scanner.start(cameras[1]);
       } else {
