@@ -39,7 +39,7 @@
     var camVideo = document.getElementById('camvideo');
     camVideo.width = sceneWidth;
     camVideo.height = sceneHeight;
-    navigator.mediaDevices.getUserMedia({video: true, audio: false})
+    /*navigator.mediaDevices.getUserMedia({video: true, audio: false})
       .then(function (stream) {
         camVideo.srcObject = stream;
         camVideo.play();
@@ -47,7 +47,7 @@
       .catch(function (err) {
         console.log(err)
         $('#qrcode-data').html('error' + err.message);
-      });
+      });*/
 
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, sceneWidth / sceneHeight, 1, 1000);
@@ -116,14 +116,14 @@
     };
     animate();
 
-    /*scanner = new Instascan.Scanner({video: document.getElementById('preview'), mirror: false});
+    scanner = new Instascan.Scanner({video: document.getElementById('camvideo'), mirror: false});
     scanner.addListener('scan', function (content) {
       console.log(content);
       $('#qrcode-data').html(content);
       cube.material.color = new THREE.Color(content);
-    });*/
+    });
 
-    /*Instascan.Camera.getCameras().then(function (cameras) {
+    Instascan.Camera.getCameras().then(function (cameras) {
       if (cameras.length > 0) {
         scanner.start(cameras[1]);
       } else {
@@ -131,7 +131,7 @@
       }
     }).catch(function (e) {
       document.getElementById('qrcode-data').innerHTML = e.message
-    });*/
+    });
 
   } catch (err) {
     $('#qrcode-data').html('error' + err.message);
