@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Use the title from a page's frontmatter if it has one -->
+  <title>threejs + webcam</title>
+  <link href="stylesheets/bootstrap.css" rel="stylesheet" />
+  <link href="stylesheets/site.css" rel="stylesheet" />
+  <script src="javascripts/jquery-3.3.1.js"></script>
+  <script src="javascripts/underscore.js"></script>
+  <script src="javascripts/site.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+  <div id="three-scene-card" class="card border-primary w-100 h-100">
+  <div class="card-header">threejs + webcam</div>
+  <div class="card-body" id="three-scene">
+    <video id="camvideo"></video>
+  </div>
+  <div class="card-footer">
+    Data :
+    <scan id="qrcode-data">No data detected</scan>
+  </div>
+</div>
+
+<script src="javascripts/three.js"></script>
+<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+<script type="text/javascript">
+
+  sceneWidth = $('#three-scene').width();
+  sceneHeight = $('#three-scene').height();
+
+  var camVideo = document.getElementById('monitor');
+  camVideo.width = sceneWidth;
+  camVideo.height = sceneHeight;
+  navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}, audio: false})
+    .then(function (stream) {
+      camVideo.srcObject = stream;
+      camVideo.play();
+    })
+    .catch(function (err) {
+      alert("An error :: " + err.message);
+    });
+
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(75, sceneWidth / sceneHeight, 1, 1000);
+  var renderer = new THREE.WebGLRenderer();
+
+</script>
+
+</div>
+
+</body>
+</html>

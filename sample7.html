@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Use the title from a page's frontmatter if it has one -->
+  <title>threejs.org creating-a-scene</title>
+  <link href="stylesheets/bootstrap.css" rel="stylesheet" />
+  <link href="stylesheets/site.css" rel="stylesheet" />
+  <script src="javascripts/jquery-3.3.1.js"></script>
+  <script src="javascripts/underscore.js"></script>
+  <script src="javascripts/site.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+  <style>
+  #webgl-error-message {
+    position: fixed;
+    top: 10px;
+  }
+
+</style>
+<div id="three-scene-card" class="card border-primary w-100 h-100">
+  <div class="card-header">three.js + three.ar.js</div>
+  <div class="card-body" id="three-scene">
+
+  </div>
+</div>
+
+<script src="https://google-ar.github.io/three.ar.js/third_party/three.js/three.js"></script>
+<script src="https://google-ar.github.io/three.ar.js/third_party/three.js/VRControls.js"></script>
+<script src="https://google-ar.github.io/three.ar.js/third_party/dat.gui/dat.gui.js"></script>
+<script src="https://google-ar.github.io/three.ar.js/dist/three.ar.js"></script>
+
+<script src="javascripts/three.ar.js"></script>
+<script type="text/javascript">
+  THREE.ARUtils.getARDisplay().then(function (display) {
+    if (display) {
+      if (display.getMarkers) {
+        vrDisplay = display;
+        init();
+      } else {
+        THREE.ARUtils.displayUnsupportedMessage("This prototype browser app for WebAR does not support marker detection yet.");
+      }
+    } else {
+      THREE.ARUtils.displayUnsupportedMessage();
+    }
+  });
+</script>
+
+</div>
+
+</body>
+</html>
