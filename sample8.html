@@ -18,7 +18,7 @@
   <div id="three-scene-card" class="card border-primary w-100 h-100">
   <div class="card-header">threejs + webcam</div>
   <div class="card-body" id="three-scene">
-
+    <video id="camvideo" hidden></video>
   </div>
   <div class="card-footer">
     Data :
@@ -34,8 +34,7 @@
     sceneWidth = $('#three-scene').width() - 15;
     sceneHeight = $('#three-scene').height();
 
-    var camVideo = document.createElement('camvideo');
-    camVideo.id = 'camvideo'
+    var camVideo = document.getElementById('camvideo');
     camVideo.width = sceneWidth;
     camVideo.height = sceneHeight;
     navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}, audio: false})
@@ -44,7 +43,7 @@
         camVideo.play();
       })
       .catch(function (err) {
-        $('#qrcode-data').html(err.message);
+        $('#qrcode-data').html('error' + err.message);
       });
 
     var scene = new THREE.Scene();
@@ -110,7 +109,7 @@
     animate();
 
   } catch (err) {
-    $('#qrcode-data').html(err.message);
+    $('#qrcode-data').html('error' + err.message);
   }
 </script>
 
