@@ -39,7 +39,7 @@
     var camVideo = document.getElementById('camvideo');
     camVideo.width = sceneWidth;
     camVideo.height = sceneHeight;
-    navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}, audio: false})
+    navigator.mediaDevices.getUserMedia({video: {exact: "environment"}, audio: false})
       .then(function (stream) {
         camVideo.srcObject = stream;
         camVideo.play();
@@ -115,7 +115,7 @@
     };
     animate();
 
-    scanner = new Instascan.Scanner({mirror: false});
+    scanner = new Instascan.Scanner({video: camVideo, mirror: false});
     scanner.addListener('scan', function (content) {
       console.log(content);
       $('#qrcode-data').html(content);
