@@ -39,15 +39,6 @@
     var camVideo = document.getElementById('camvideo');
     camVideo.width = sceneWidth;
     camVideo.height = sceneHeight;
-    /*navigator.mediaDevices.getUserMedia({video: true, audio: false})
-      .then(function (stream) {
-        camVideo.srcObject = stream;
-        camVideo.play();
-      })
-      .catch(function (err) {
-        console.log(err)
-        $('#qrcode-data').html('error' + err.message);
-      });*/
 
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, sceneWidth / sceneHeight, 1, 1000);
@@ -121,6 +112,12 @@
       console.log(content);
       $('#qrcode-data').html(content);
       cube.material.color = new THREE.Color(content);
+    });
+    scanner.addListener('active', function () {
+      $('#qrcode-data').html('Active');
+    });
+    scanner.addListener('inactive', function () {
+      $('#qrcode-data').html('inActive');
     });
 
     Instascan.Camera.getCameras().then(function (cameras) {
