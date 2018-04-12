@@ -19,7 +19,7 @@
   <div id="three-scene-card" class="card border-primary w-100 h-100">
   <div class="card-header">AR.js + jsQR</div>
   <div class="card-body" id="three-scene">
-    <a-scene embedded arjs>
+    <a-scene embedded arjs='debug: false; trackingMethod: best;' raycaster="far: 100; objects: [link];" cursor="rayOrigin: mouse">
       <a-box position='0 0 0' material='opacity: 0.5;' color="#4CC3D9"></a-box>
       <a-marker-camera preset='hiro'></a-marker-camera>
     </a-scene>
