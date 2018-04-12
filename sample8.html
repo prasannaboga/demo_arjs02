@@ -91,8 +91,8 @@
     var animate = function () {
       requestAnimationFrame(animate);
       renderer.clear();
-      cube.rotation.x += 0.001;
-      cube.rotation.y += 0.001;
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
       if (camVideo.readyState === camVideo.HAVE_ENOUGH_DATA) {
         videoImageContext.drawImage(camVideo, 0, 0);
         if (videoTexture)
