@@ -27,7 +27,7 @@
   </div>
 </div>
 
-<script src="javascripts/instascan.min.js"></script>
+<!--<script src="javascripts/instascan.min.js"></script>-->
 <script src="javascripts/three.js"></script>
 <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 <script type="text/javascript">
@@ -45,6 +45,7 @@
         camVideo.play();
       })
       .catch(function (err) {
+        console.log(err)
         $('#qrcode-data').html('error' + err.message);
       });
 
