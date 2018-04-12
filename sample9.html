@@ -20,11 +20,26 @@
   </a-box>
   <a-marker-camera preset='hiro'></a-marker-camera>
 </a-scene>
+<canvas id='mycanvas' hidden></canvas>
 
 <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
-<script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.5.0/aframe/build/aframe-ar.js"></script>
+<script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.5.5/aframe/build/aframe-ar.js"></script>
 <script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
 <script type="text/javascript">
+try {
+  var canvasElement = document.getElementsById("mycanvas");
+  var canvasContext = canvasElement.getContext("2d");
+  canvasContext.drawImage($('video'), 0, 0, canvasElement.width, canvasElement.height);
+  var imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
+  var code = jsQR(imageData.data, imageData.width, imageData.height);
+  if(code) {
+    alert(code);
+  } else {
+    alert('No Code Data');
+  }
+  } catch (err) {
+    alert(err.message)
+  }
 
 </script>
 </body>
