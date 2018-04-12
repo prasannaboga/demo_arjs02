@@ -39,7 +39,7 @@
     var camVideo = document.getElementById('camvideo');
     camVideo.width = sceneWidth;
     camVideo.height = sceneHeight;
-    navigator.mediaDevices.getUserMedia({video: { facingMode: { exact: "environment" } }, audio: false})
+    navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}, audio: false})
       .then(function (stream) {
         camVideo.srcObject = stream;
         camVideo.play();
