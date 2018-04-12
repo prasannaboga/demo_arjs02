@@ -18,7 +18,7 @@
   <div id="three-scene-card" class="card border-primary w-100 h-100">
   <div class="card-header">threejs + webcam</div>
   <div class="card-body" id="three-scene">
-    <video id="camvideo"></video>
+
   </div>
   <div class="card-footer">
     Data :
@@ -34,7 +34,8 @@
     sceneWidth = $('#three-scene').width() - 15;
     sceneHeight = $('#three-scene').height();
 
-    var camVideo = document.getElementById('camvideo');
+    var camVideo = document.createElement('camvideo');
+    camVideo.id = 'camvideo'
     camVideo.width = sceneWidth;
     camVideo.height = sceneHeight;
     navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}, audio: false})
