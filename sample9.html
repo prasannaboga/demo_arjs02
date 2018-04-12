@@ -1,4 +1,3 @@
-<!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -8,35 +7,23 @@
   <!-- Use the title from a page's frontmatter if it has one -->
   <title>AR.js + jsQR</title>
   <link rel="shortcut icon" href="about:blank">
-  <link href="stylesheets/bootstrap.css" rel="stylesheet" />
-  <link href="stylesheets/site.css" rel="stylesheet" />
+  <link href="stylesheets/bootstrap.css" rel="stylesheet"/>
+  <link href="stylesheets/site.css" rel="stylesheet"/>
   <script src="javascripts/jquery-3.3.1.js"></script>
   <script src="javascripts/underscore.js"></script>
   <script src="javascripts/site.js"></script>
 </head>
-<body>
-<div class="container-fluid">
-  <div id="three-scene-card" class="card border-primary w-100 h-100">
-  <div class="card-header">AR.js + jsQR</div>
-  <div class="card-body" id="three-scene">
-    <a-scene embedded arjs='debug: false; trackingMethod: best;' raycaster="far: 100; objects: [link];" cursor="rayOrigin: mouse">
-      <a-box position='0 0 0' material='opacity: 0.5;' color="#4CC3D9"></a-box>
-      <a-marker-camera preset='hiro'></a-marker-camera>
-    </a-scene>
-  </div>
-  <div class="card-footer">
-    Data :
-    <scan id="qrcode-data">No data detected</scan>
-  </div>
-</div>
+<body style='margin : 0px; overflow: hidden;'>
+
+<a-scene embedded arjs>
+  <a-box position='0 0.5 0' material='opacity: 0.5;' color='red'></a-box>
+  <a-marker-camera preset='hiro'></a-marker-camera>
+</a-scene>
 
 <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.5.0/aframe/build/aframe-ar.js"></script>
 <script type="text/javascript">
 
 </script>
-
-</div>
-
 </body>
 </html>
