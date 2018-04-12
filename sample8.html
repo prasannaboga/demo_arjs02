@@ -30,25 +30,87 @@
 <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 <script type="text/javascript">
 
-  sceneWidth = $('#three-scene').width();
-  sceneHeight = $('#three-scene').height();
+  try {
+    sceneWidth = $('#three-scene').width() - 15;
+    sceneHeight = $('#three-scene').height();
 
-  var camVideo = document.getElementById('camvideo');
-  camVideo.width = sceneWidth;
-  camVideo.height = sceneHeight;
-  navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}, audio: false})
-    .then(function (stream) {
-      camVideo.srcObject = stream;
-      camVideo.play();
-    })
-    .catch(function (err) {
-      alert("An error :: " + err.message);
-    });
+    var camVideo = document.getElementById('camvideo');
+    camVideo.width = sceneWidth;
+    camVideo.height = sceneHeight;
+    navigator.mediaDevices.getUserMedia({video: {facingMode: "environment"}, audio: false})
+      .then(function (stream) {
+        camVideo.srcObject = stream;
+        camVideo.play();
+      })
+      .catch(function (err) {
+        $('#qrcode-data').html(err.message);
+      });
 
-  var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(75, sceneWidth / sceneHeight, 1, 1000);
-  var renderer = new THREE.WebGLRenderer();
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(75, sceneWidth / sceneHeight, 1, 1000);
+    var renderer = new THREE.WebGLRenderer({antialias: false});
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(sceneWidth, sceneHeight);
+    container = document.getElementById('container');
+    $('#three-scene').append(renderer.domElement);
 
+    camera.position.z = 5;
+
+    var controls = new THREE.OrbitControls(camera);
+    controls.update();
+
+    var geometry = new THREE.BoxGeometry(2, 2, 2);
+    var material = new THREE.MeshBasicMaterial({color: 'red'});
+    var cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    //video
+    videoImage = document.createElement('canvas');
+    videoImage.width = sceneWidth;
+    videoImage.height = sceneHeight;
+
+    videoImageContext = videoImage.getContext('2d');
+    // background color if no video present
+    videoImageContext.fillStyle = '#000000';
+    videoImageContext.fillRect(0, 0, videoImage.width, videoImage.height);
+
+    videoTexture = new THREE.Texture(videoImage);
+    videoTexture.minFilter = THREE.LinearFilter;
+    videoTexture.magFilter = THREE.LinearFilter;
+
+    movieMaterial = new THREE.MeshBasicMaterial({map: videoTexture});
+    movieGeometry = new THREE.PlaneGeometry(2, 2, 0);
+    movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
+    movieScreen.material.depthTest = false;
+    movieScreen.material.depthWrite = false;
+
+    backgroundScene = new THREE.Scene();
+    backgroundCamera = new THREE.Camera();
+    backgroundScene.add(backgroundCamera);
+    backgroundScene.add(movieScreen);
+
+    var animate = function () {
+      requestAnimationFrame(animate);
+      renderer.clear();
+      cube.rotation.x += 0.001;
+      cube.rotation.y += 0.001;
+      if (camVideo.readyState === camVideo.HAVE_ENOUGH_DATA) {
+        videoImageContext.drawImage(camVideo, 0, 0);
+        if (videoTexture)
+          videoTexture.needsUpdate = true;
+      }
+
+      renderer.autoClear = false;
+      controls.update();
+
+      renderer.render(backgroundScene, backgroundCamera);
+      renderer.render(scene, camera);
+    };
+    animate();
+
+  } catch (err) {
+    $('#qrcode-data').html(err.message);
+  }
 </script>
 
 </div>
