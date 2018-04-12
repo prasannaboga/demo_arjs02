@@ -48,7 +48,7 @@
 
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, sceneWidth / sceneHeight, 1, 1000);
-    var renderer = new THREE.WebGLRenderer({antialias: false});
+    var renderer = new THREE.WebGLRenderer({alpha: true});
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(sceneWidth, sceneHeight);
     container = document.getElementById('container');
