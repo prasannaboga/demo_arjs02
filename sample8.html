@@ -115,7 +115,7 @@
     };
     animate();
 
-    scanner = new Instascan.Scanner({video: camVideo, mirror: false});
+    /*scanner = new Instascan.Scanner({video: camVideo, mirror: false});
     scanner.addListener('scan', function (content) {
       console.log(content);
       $('#qrcode-data').html(content);
@@ -130,7 +130,7 @@
       }
     }).catch(function (e) {
       document.getElementById('qrcode-data').innerHTML = e.message
-    });
+    });*/
 
   } catch (err) {
     $('#qrcode-data').html('error' + err.message);
