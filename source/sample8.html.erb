@@ -1,0 +1,116 @@
+---
+title: threejs + webcam
+---
+
+<div id="three-scene-card" class="card border-primary w-100 h-100">
+  <div class="card-header">threejs + webcam</div>
+  <div class="card-body" id="three-scene">
+    <video id="camvideo" hidden></video>
+  </div>
+  <div class="card-footer">
+    Data :
+    <scan id="qrcode-data">No data detected</scan>
+  </div>
+</div>
+
+<script src="javascripts/instascan.min.js"></script>
+<script src="javascripts/three.js"></script>
+<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+<script type="text/javascript">
+
+  try {
+    sceneWidth = $('#three-scene').width() - 15;
+    sceneHeight = $('#three-scene').height();
+
+    var camVideo = document.getElementById('camvideo');
+    camVideo.width = sceneWidth;
+    camVideo.height = sceneHeight;
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(75, sceneWidth / sceneHeight, 1, 1000);
+    var renderer = new THREE.WebGLRenderer({alpha: true});
+    renderer.setClearAlpha(0.0);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(sceneWidth, sceneHeight);
+    container = document.getElementById('container');
+    $('#three-scene').append(renderer.domElement);
+
+    camera.position.z = 5;
+
+    var controls = new THREE.OrbitControls(camera);
+    controls.update();
+
+    var geometry = new THREE.BoxGeometry(2, 2, 2);
+    var material = new THREE.MeshBasicMaterial({
+      color: 'red',
+      opacity: 0.7,
+      transparent: true
+    });
+    var cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    //video
+    videoImage = document.createElement('canvas');
+    videoImage.width = sceneWidth;
+    videoImage.height = sceneHeight;
+
+    videoImageContext = videoImage.getContext('2d');
+    // background color if no video present
+    videoImageContext.fillStyle = '#000000';
+    videoImageContext.fillRect(0, 0, videoImage.width, videoImage.height);
+
+    videoTexture = new THREE.Texture(videoImage);
+    videoTexture.minFilter = THREE.LinearFilter;
+    videoTexture.magFilter = THREE.LinearFilter;
+
+    movieMaterial = new THREE.MeshBasicMaterial({map: videoTexture});
+    movieGeometry = new THREE.PlaneGeometry(2, 2, 0);
+    movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
+    movieScreen.material.depthTest = false;
+    movieScreen.material.depthWrite = false;
+
+    backgroundScene = new THREE.Scene();
+    backgroundCamera = new THREE.Camera();
+    backgroundScene.add(backgroundCamera);
+    backgroundScene.add(movieScreen);
+
+    var animate = function () {
+      requestAnimationFrame(animate);
+      renderer.clear();
+      cube.rotation.x += 0.001;
+      cube.rotation.y += 0.001;
+      if (camVideo.readyState === camVideo.HAVE_ENOUGH_DATA) {
+        videoImageContext.drawImage(camVideo, 0, 0);
+        if (videoTexture)
+          videoTexture.needsUpdate = true;
+      }
+
+      renderer.autoClear = false;
+      controls.update();
+
+      renderer.render(backgroundScene, backgroundCamera);
+      renderer.render(scene, camera);
+    };
+    animate();
+
+    scanner = new Instascan.Scanner({video: document.getElementById('camvideo'), mirror: false});
+    scanner.addListener('scan', function (content) {
+      console.log(content);
+      $('#qrcode-data').html(content);
+      cube.material.color = new THREE.Color(content);
+    });
+
+    Instascan.Camera.getCameras().then(function (cameras) {
+      if (cameras.length > 0) {
+        scanner.start(cameras[1]);
+      } else {
+        document.getElementById('qrcode-data').innerHTML = 'No cameras found.'
+      }
+    }).catch(function (e) {
+      document.getElementById('qrcode-data').innerHTML = e.message
+    });
+
+  } catch (err) {
+    $('#qrcode-data').html('error' + err.message);
+  }
+</script>

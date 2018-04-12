@@ -1,0 +1,38 @@
+---
+title: threejs.org creating-a-scene
+---
+
+<style>
+  #webgl-error-message {
+    position: fixed;
+    top: 10px;
+  }
+
+</style>
+<div id="three-scene-card" class="card border-primary w-100 h-100">
+  <div class="card-header">three.js + three.ar.js</div>
+  <div class="card-body" id="three-scene">
+
+  </div>
+</div>
+
+<script src="https://google-ar.github.io/three.ar.js/third_party/three.js/three.js"></script>
+<script src="https://google-ar.github.io/three.ar.js/third_party/three.js/VRControls.js"></script>
+<script src="https://google-ar.github.io/three.ar.js/third_party/dat.gui/dat.gui.js"></script>
+<script src="https://google-ar.github.io/three.ar.js/dist/three.ar.js"></script>
+
+<script src="javascripts/three.ar.js"></script>
+<script type="text/javascript">
+  THREE.ARUtils.getARDisplay().then(function (display) {
+    if (display) {
+      if (display.getMarkers) {
+        vrDisplay = display;
+        init();
+      } else {
+        THREE.ARUtils.displayUnsupportedMessage("This prototype browser app for WebAR does not support marker detection yet.");
+      }
+    } else {
+      THREE.ARUtils.displayUnsupportedMessage();
+    }
+  });
+</script>
