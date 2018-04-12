@@ -7,6 +7,7 @@
         content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <!-- Use the title from a page's frontmatter if it has one -->
   <title>threejs + webcam</title>
+  <link rel="shortcut icon" href="about:blank">
   <link href="stylesheets/bootstrap.css" rel="stylesheet" />
   <link href="stylesheets/site.css" rel="stylesheet" />
   <script src="javascripts/jquery-3.3.1.js"></script>
@@ -26,6 +27,7 @@
   </div>
 </div>
 
+<script src="javascripts/instascan.min.js"></script>
 <script src="javascripts/three.js"></script>
 <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 <script type="text/javascript">
@@ -49,6 +51,7 @@
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, sceneWidth / sceneHeight, 1, 1000);
     var renderer = new THREE.WebGLRenderer({alpha: true});
+    renderer.setClearAlpha(0.0);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(sceneWidth, sceneHeight);
     container = document.getElementById('container');
@@ -60,7 +63,11 @@
     controls.update();
 
     var geometry = new THREE.BoxGeometry(2, 2, 2);
-    var material = new THREE.MeshBasicMaterial({color: 'red'});
+    var material = new THREE.MeshBasicMaterial({
+      color: 'red',
+      opacity: 0.7,
+      transparent: true
+    });
     var cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
 
@@ -107,6 +114,23 @@
       renderer.render(scene, camera);
     };
     animate();
+
+    scanner = new Instascan.Scanner({mirror: false});
+    scanner.addListener('scan', function (content) {
+      console.log(content);
+      $('#qrcode-data').html(content);
+      cube.material.color = new THREE.Color(content);
+    });
+
+    Instascan.Camera.getCameras().then(function (cameras) {
+      if (cameras.length > 0) {
+        scanner.start(cameras[1]);
+      } else {
+        document.getElementById('qrcode-data').innerHTML = 'No cameras found.'
+      }
+    }).catch(function (e) {
+      document.getElementById('qrcode-data').innerHTML = e.message
+    });
 
   } catch (err) {
     $('#qrcode-data').html('error' + err.message);
