@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Use the title from a page's frontmatter if it has one -->
+  <title>jsartoolkit5 testing</title>
+  <link rel="shortcut icon" href="about:blank">
+  <link href="stylesheets/bootstrap.css" rel="stylesheet" />
+  <link href="stylesheets/site.css" rel="stylesheet" />
+  <script src="javascripts/jquery-3.3.1.js"></script>
+  <script src="javascripts/underscore.js"></script>
+  <script src="javascripts/site.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+  <style>
+
+</style>
+<div id="three-scene-card" class="card border-primary w-100 h-100">
+  <div class="card-header">jsartoolkit5 testing</div>
+  <div class="card-body" id="three-scene">
+
+  </div>
+  <div class="card-footer">
+    Data :
+    <scan id="qrcode-data">No data detected</scan>
+  </div>
+</div>
+
+<script src="javascripts/artoolkit.debug.js"></script>
+<script src="javascripts/artoolkit.api.js"></script>
+<script src="javascripts/three.js"></script>
+<script src="javascripts/artoolkit.three.js"></script>
+
+<script type="text/javascript">
+  try {
+    window.ARThreeOnLoad = function () {
+      var param = new ARCameraParam();
+
+      param.onload = function () {
+        var img = document.getElementById('three-scene');
+        var ar = new ARController(img.width, img.height, param);
+
+        ar.setPatternDetectionMode(artoolkit.AR_TEMPLATE_MATCHING_COLOR_AND_MATRIX);
+
+        ar.addEventListener('markerNum', function (ev) {
+          console.log('got markers', markerNum);
+        });
+        ar.addEventListener('getMarker', function (ev) {
+          console.log('found marker?', ev);
+        });
+        ar.loadMarker('Data/patt.hiro', function (marker) {
+          console.log('loaded marker', marker);
+          ar.process(img);
+        });
+      };
+
+      param.src = 'Data/camera_para.dat';
+    };
+
+    if (window.ARController && window.ARController.getUserMediaThreeScene) {
+      ARThreeOnLoad();
+    }
+  } catch (err) {
+    alert(err);
+  }
+</script>
+
+</div>
+
+</body>
+</html>
