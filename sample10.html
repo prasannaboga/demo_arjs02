@@ -22,7 +22,7 @@
 <div id="three-scene-card" class="card border-primary w-100 h-100">
   <div class="card-header">jsartoolkit5 testing</div>
   <div class="card-body" id="three-scene">
-    <video id="my-image"></video>
+
   </div>
   <div class="card-footer">
     Data :
@@ -38,28 +38,25 @@
 <script type="text/javascript">
   try {
     window.ARThreeOnLoad = function () {
-      var param = new ARCameraParam();
-
-      param.onload = function () {
-        var img = document.getElementById('my-image');
-        var ar = new ARController(img.width, img.height, param);
-        alert(ar.width);
-
-        ar.setPatternDetectionMode(artoolkit.AR_TEMPLATE_MATCHING_COLOR_AND_MATRIX);
-
-        ar.addEventListener('markerNum', function (ev) {
-          console.log('got markers', markerNum);
-        });
-        ar.addEventListener('getMarker', function (ev) {
-          alert('found marker?'+ ev);
-        });
-        ar.loadMarker('images/patt.hiro', function (marker) {
-          console.log('loaded marker', marker);
-          ar.process(img);
-        });
-      };
-
-      param.src = 'images/camera_para.dat';
+      ARController.getUserMediaThreeScene({
+        maxARVideoSize: 320,
+        cameraParam: 'images/camera_para.dat',
+        onSuccess: function (arScene, arController, arCamera) {
+          sceneWidth = $('#three-scene').width();
+          sceneHeight = $('#three-scene').height();
+          var renderer = new THREE.WebGLRenderer({alpha: true});
+          renderer.setClearAlpha(0.0);
+          renderer.setPixelRatio(window.devicePixelRatio);
+          renderer.setSize(sceneWidth, sceneHeight);
+          var tick = function () {
+            arScene.process();
+            arScene.renderOn(renderer);
+            requestAnimationFrame(tick);
+          };
+          tick();
+        }
+      });
+      delete window.ARThreeOnLoad;
     };
 
     if (window.ARController && window.ARController.getUserMediaThreeScene) {
