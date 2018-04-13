@@ -22,7 +22,7 @@
 <div id="three-scene-card" class="card border-primary w-100 h-100">
   <div class="card-header">jsartoolkit5 testing</div>
   <div class="card-body" id="three-scene">
-
+    <img id="my-image">
   </div>
   <div class="card-footer">
     Data :
@@ -41,7 +41,7 @@
       var param = new ARCameraParam();
 
       param.onload = function () {
-        var img = document.getElementById('three-scene');
+        var img = document.getElementById('my-image');
         var ar = new ARController(img.width, img.height, param);
         alert(ar.width);
 
