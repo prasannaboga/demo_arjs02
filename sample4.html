@@ -82,6 +82,22 @@
             requestAnimationFrame(tick);
           };
           tick();
+
+          scanner = new Instascan.Scanner({mirror: false});
+          scanner.addListener('scan', function (content) {
+            alert(content);
+            cube.material.color = new THREE.Color(content);
+          });
+
+          Instascan.Camera.getCameras().then(function (cameras) {
+            if (cameras.length > 0) {
+              scanner.start(cameras[0]);
+            } else {
+              alert('No cameras found.');
+            }
+          }).catch(function (e) {
+            alert(e.message);
+          });
         }
       });
       delete window.ARThreeOnLoad;
