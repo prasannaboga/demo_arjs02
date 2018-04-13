@@ -26,8 +26,20 @@
 <script type="text/javascript">
   try {
 
+    
+
+    Instascan.Camera.getCameras().then(function (cameras) {
+      if (cameras.length > 0) {
+        scanner.start(cameras[1]);
+      } else {
+        alert('No cameras found.');
+      }
+    }).catch(function (err) {
+      alert(err);
+    });
+
   } catch (err) {
-    console.error(err)
+    alert(err);
   }
 </script>
 </body>
