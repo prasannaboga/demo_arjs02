@@ -32,61 +32,65 @@
 <script src="javascripts/three.OrbitControls.js"></script>
 <script src="javascripts/artoolkit.three.js"></script>
 <script type="text/javascript">
-  window.ARThreeOnLoad = function () {
-    ARController.getUserMediaThreeScene({
-      maxARVideoSize: 320, cameraParam: 'images/camera_para-iPhone 5 rear 640x480 1.0m.dat',
-      onSuccess: function (arScene, arController, arCamera) {
-        document.body.className = arController.orientation;
-        var renderer = new THREE.WebGLRenderer({antialias: true});
-        if (arController.orientation === 'portrait') {
-          var w = (window.innerWidth / arController.videoHeight) * arController.videoWidth;
-          var h = window.innerWidth;
-          renderer.setSize(w, h);
-          renderer.domElement.style.paddingBottom = (w - h) + 'px';
-        } else {
-          if (/Android|mobile|iPad|iPhone/i.test(navigator.userAgent)) {
-            renderer.setSize(window.innerWidth, (window.innerWidth / arController.videoWidth) * arController.videoHeight);
+  try {
+    window.ARThreeOnLoad = function () {
+      ARController.getUserMediaThreeScene({
+        maxARVideoSize: 320, cameraParam: 'images/camera_para-iPhone 5 rear 640x480 1.0m.dat',
+        onSuccess: function (arScene, arController, arCamera) {
+          document.body.className = arController.orientation;
+          var renderer = new THREE.WebGLRenderer({antialias: true});
+          if (arController.orientation === 'portrait') {
+            var w = (window.innerWidth / arController.videoHeight) * arController.videoWidth;
+            var h = window.innerWidth;
+            renderer.setSize(w, h);
+            renderer.domElement.style.paddingBottom = (w - h) + 'px';
           } else {
-            renderer.setSize(arController.videoWidth, arController.videoHeight);
-            document.body.className += ' desktop';
+            if (/Android|mobile|iPad|iPhone/i.test(navigator.userAgent)) {
+              renderer.setSize(window.innerWidth, (window.innerWidth / arController.videoWidth) * arController.videoHeight);
+            } else {
+              renderer.setSize(arController.videoWidth, arController.videoHeight);
+              document.body.className += ' desktop';
+            }
           }
-        }
-        document.body.insertBefore(renderer.domElement, document.body.firstChild);
-        var rotationV = 0;
-        var rotationTarget = 0;
-        renderer.domElement.addEventListener('click', function (ev) {
-          ev.preventDefault();
-          rotationTarget += 1;
-        }, false);
-        var geometry = new THREE.BoxGeometry(2, 2, 2);
-        var material = new THREE.MeshBasicMaterial({
-          color: 'red',
-          opacity: 0.7,
-          transparent: true
-        });
-        var cube = new THREE.Mesh(geometry, material);
-        cube.position.z = 0.5;
+          document.body.insertBefore(renderer.domElement, document.body.firstChild);
+          var rotationV = 0;
+          var rotationTarget = 0;
+          renderer.domElement.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            rotationTarget += 1;
+          }, false);
+          var geometry = new THREE.BoxGeometry(2, 2, 2);
+          var material = new THREE.MeshBasicMaterial({
+            color: 'red',
+            opacity: 0.7,
+            transparent: true
+          });
+          var cube = new THREE.Mesh(geometry, material);
+          cube.position.z = 0.5;
 
-        arController.loadMarker('images/patt.hiro', function (markerId) {
-          var markerRoot = arController.createThreeMarker(markerId);
-          markerRoot.add(cube);
-          arScene.scene.add(markerRoot);
-        });
-        var tick = function () {
-          arScene.process();
-          rotationV += (rotationTarget - cube.rotation.z) * 0.05;
-          cube.rotation.z += rotationV;
-          rotationV *= 0.8;
-          arScene.renderOn(renderer);
-          requestAnimationFrame(tick);
-        };
-        tick();
-      }
-    });
-    delete window.ARThreeOnLoad;
-  };
-  if (window.ARController && ARController.getUserMediaThreeScene) {
-    ARThreeOnLoad();
+          arController.loadMarker('images/patt.hiro', function (markerId) {
+            var markerRoot = arController.createThreeMarker(markerId);
+            markerRoot.add(cube);
+            arScene.scene.add(markerRoot);
+          });
+          var tick = function () {
+            arScene.process();
+            rotationV += (rotationTarget - cube.rotation.z) * 0.05;
+            cube.rotation.z += rotationV;
+            rotationV *= 0.8;
+            arScene.renderOn(renderer);
+            requestAnimationFrame(tick);
+          };
+          tick();
+        }
+      });
+      delete window.ARThreeOnLoad;
+    };
+    if (window.ARController && ARController.getUserMediaThreeScene) {
+      ARThreeOnLoad();
+    }
+  } catch (err) {
+    alert(err);
   }
 </script>
 </body>
