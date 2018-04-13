@@ -34,7 +34,7 @@
 <script type="text/javascript">
   window.ARThreeOnLoad = function () {
     ARController.getUserMediaThreeScene({
-      maxARVideoSize: 320, facing: { exact: 'environment'},
+      maxARVideoSize: 320, cameraParam: 'images/camera_para-iPhone 5 rear 640x480 1.0m.dat',
       onSuccess: function (arScene, arController, arCamera) {
         document.body.className = arController.orientation;
         var renderer = new THREE.WebGLRenderer({antialias: true});
@@ -58,29 +58,24 @@
           ev.preventDefault();
           rotationTarget += 1;
         }, false);
-        var sphere = new THREE.Mesh(
-          new THREE.SphereGeometry(0.5, 8, 8),
-          new THREE.MeshNormalMaterial()
-        );
-        sphere.material.shading = THREE.FlatShading;
-        sphere.position.z = 0.5;
-        var torus = new THREE.Mesh(
-          new THREE.TorusGeometry(0.3, 0.2, 8, 8),
-          new THREE.MeshNormalMaterial()
-        );
-        torus.material.shading = THREE.FlatShading;
-        torus.position.z = 0.5;
-        torus.rotation.x = Math.PI / 2;
+        var geometry = new THREE.BoxGeometry(2, 2, 2);
+        var material = new THREE.MeshBasicMaterial({
+          color: 'red',
+          opacity: 0.7,
+          transparent: true
+        });
+        var cube = new THREE.Mesh(geometry, material);
+        cube.position.z = 0.5;
+
         arController.loadMarker('images/patt.hiro', function (markerId) {
           var markerRoot = arController.createThreeMarker(markerId);
-          markerRoot.add(sphere);
+          markerRoot.add(cube);
           arScene.scene.add(markerRoot);
         });
         var tick = function () {
           arScene.process();
-          rotationV += (rotationTarget - sphere.rotation.z) * 0.05;
-          sphere.rotation.z += rotationV;
-          torus.rotation.y += rotationV;
+          rotationV += (rotationTarget - cube.rotation.z) * 0.05;
+          cube.rotation.z += rotationV;
           rotationV *= 0.8;
           arScene.renderOn(renderer);
           requestAnimationFrame(tick);
