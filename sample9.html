@@ -27,28 +27,30 @@
 <script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
 <script type="text/javascript">
   $(document).ready(function () {
-    try {
-      var video = document.querySelector('video');
-      var canvasElement = document.createElement("canvas");
+    artoolkitMarker.addEventListener('markerFound', function (event) {
+      try {
+        var video = document.querySelector('video');
+        var canvasElement = document.createElement("canvas");
 
-      function tick() {
-        console.log('--started tick--');
-        canvasElement.width = video.width;
-        canvasElement.height = video.height;
-        canvas = canvasElement.getContext("2d");
-        canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
-        var imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
-        console.log(imageData);
-        var code = jsQR(imageData.data, imageData.width, imageData.height);
-        alert(code);
-        console.log('--endded tick--');
-        requestAnimationFrame(tick);
+        function tick() {
+          console.log('--started tick--');
+          canvasElement.width = video.width;
+          canvasElement.height = video.height;
+          canvas = canvasElement.getContext("2d");
+          canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+          var imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+          console.log(imageData);
+          var code = jsQR(imageData.data, imageData.width, imageData.height);
+          alert(code);
+          console.log('--endded tick--');
+          requestAnimationFrame(tick);
+        }
+
+        tick();
+      } catch (err) {
+        alert(err)
       }
-
-      tick();
-    } catch (err) {
-      alert(err)
-    }
+    });
   });
 </script>
 </body>
