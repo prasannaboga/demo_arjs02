@@ -32,14 +32,14 @@
 
     function tick() {
       console.log('--started tick--');
-      canvasElement.width = window.innerWidth;
-      canvasElement.height = window.innerHeight;
+      canvasElement.width = video.width;
+      canvasElement.height = video.height;
       canvas = canvasElement.getContext("2d");
       canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
       var imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
       console.log(imageData);
       var code = jsQR(imageData.data, imageData.width, imageData.height);
-      console.log(code);
+      alert(code);
       console.log('--endded tick--');
       requestAnimationFrame(tick);
     }
