@@ -43,6 +43,7 @@
       param.onload = function () {
         var img = document.getElementById('three-scene');
         var ar = new ARController(img.width, img.height, param);
+        alert(ar.width);
 
         ar.setPatternDetectionMode(artoolkit.AR_TEMPLATE_MATCHING_COLOR_AND_MATRIX);
 
@@ -50,9 +51,9 @@
           console.log('got markers', markerNum);
         });
         ar.addEventListener('getMarker', function (ev) {
-          console.log('found marker?', ev);
+          alert('found marker?'+ ev);
         });
-        ar.loadMarker('Data/patt.hiro', function (marker) {
+        ar.loadMarker('images/patt.hiro', function (marker) {
           console.log('loaded marker', marker);
           ar.process(img);
         });
