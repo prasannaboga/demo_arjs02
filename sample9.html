@@ -28,11 +28,13 @@
 <script type="text/javascript">
   $(document).ready(function () {
     try {
-      ARController.addEventListener('getMarker', function (ev) {
+      var arController = new ARController();
+      arController.addEventListener('getMarker', function (ev) {
         alert("Detected marker with ids:", ev.data.marker.id, ev.data.marker.idPatt, ev.data.marker.idMatrix);
         console.log("Marker data", ev.data.marker);
         console.log("Marker transform matrix:", [].join.call(ev.data.matrix, ', '));
       });
+
     } catch (err) {
       alert(err)
     }
