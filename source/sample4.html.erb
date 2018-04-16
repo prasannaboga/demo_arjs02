@@ -36,67 +36,80 @@ layout: false
 <script src="javascripts/three.js"></script>
 <script src="javascripts/three.OrbitControls.js"></script>
 <script src="javascripts/artoolkit.three.js"></script>
+ <script src="javascripts/instascan.min.js"></script>
 <script type="text/javascript">
-  window.ARThreeOnLoad = function () {
-    ARController.getUserMediaThreeScene({
-      maxARVideoSize: 320, cameraParam: 'images/camera_para-iPhone 5 rear 640x480 1.0m.dat',
-      onSuccess: function (arScene, arController, arCamera) {
-        document.body.className = arController.orientation;
-        var renderer = new THREE.WebGLRenderer({antialias: true});
-        if (arController.orientation === 'portrait') {
-          var w = (window.innerWidth / arController.videoHeight) * arController.videoWidth;
-          var h = window.innerWidth;
-          renderer.setSize(w, h);
-          renderer.domElement.style.paddingBottom = (w - h) + 'px';
-        } else {
-          if (/Android|mobile|iPad|iPhone/i.test(navigator.userAgent)) {
-            renderer.setSize(window.innerWidth, (window.innerWidth / arController.videoWidth) * arController.videoHeight);
+  try {
+    window.ARThreeOnLoad = function () {
+      ARController.getUserMediaThreeScene({
+        maxARVideoSize: 320, cameraParam: 'images/camera_para-iPhone 5 rear 640x480 1.0m.dat',
+        onSuccess: function (arScene, arController, arCamera) {
+          document.body.className = arController.orientation;
+          var renderer = new THREE.WebGLRenderer({antialias: true});
+          if (arController.orientation === 'portrait') {
+            var w = (window.innerWidth / arController.videoHeight) * arController.videoWidth;
+            var h = window.innerWidth;
+            renderer.setSize(w, h);
+            renderer.domElement.style.paddingBottom = (w - h) + 'px';
           } else {
-            renderer.setSize(arController.videoWidth, arController.videoHeight);
-            document.body.className += ' desktop';
+            if (/Android|mobile|iPad|iPhone/i.test(navigator.userAgent)) {
+              renderer.setSize(window.innerWidth, (window.innerWidth / arController.videoWidth) * arController.videoHeight);
+            } else {
+              renderer.setSize(arController.videoWidth, arController.videoHeight);
+              document.body.className += ' desktop';
+            }
           }
+          document.body.insertBefore(renderer.domElement, document.body.firstChild);
+          var rotationV = 0;
+          var rotationTarget = 0;
+          renderer.domElement.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            rotationTarget += 1;
+          }, false);
+          var geometry = new THREE.BoxGeometry(2, 2, 2);
+          var material = new THREE.MeshBasicMaterial({
+            color: 'red',
+            opacity: 0.7,
+            transparent: true
+          });
+          var cube = new THREE.Mesh(geometry, material);
+          cube.position.z = 0.5;
+          arController.loadMarker('images/patt.hiro', function (markerId) {
+            var markerRoot = arController.createThreeMarker(markerId);
+            markerRoot.add(cube);
+            arScene.scene.add(markerRoot);
+          });
+          var tick = function () {
+            arScene.process();
+            rotationV += (rotationTarget - cube.rotation.z) * 0.05;
+            cube.rotation.z += rotationV;
+            rotationV *= 0.8;
+            arScene.renderOn(renderer);
+            requestAnimationFrame(tick);
+          };
+          tick();
+          scanner = new Instascan.Scanner({mirror: false});
+          scanner.addListener('scan', function (content) {
+            console.log(content);
+            cube.material.color = new THREE.Color(content);
+          });
+          Instascan.Camera.getCameras().then(function (cameras) {
+            if (cameras.length > 0) {
+              scanner.start(cameras[0]);
+            } else {
+              alert('No cameras found.');
+            }
+          }).catch(function (e) {
+            alert(e.message);
+          });
         }
-        document.body.insertBefore(renderer.domElement, document.body.firstChild);
-        var rotationV = 0;
-        var rotationTarget = 0;
-        renderer.domElement.addEventListener('click', function (ev) {
-          ev.preventDefault();
-          rotationTarget += 1;
-        }, false);
-        var sphere = new THREE.Mesh(
-          new THREE.SphereGeometry(0.5, 8, 8),
-          new THREE.MeshNormalMaterial()
-        );
-        sphere.material.shading = THREE.FlatShading;
-        sphere.position.z = 0.5;
-        var torus = new THREE.Mesh(
-          new THREE.TorusGeometry(0.3, 0.2, 8, 8),
-          new THREE.MeshNormalMaterial()
-        );
-        torus.material.shading = THREE.FlatShading;
-        torus.position.z = 0.5;
-        torus.rotation.x = Math.PI / 2;
-        arController.loadMarker('images/patt.hiro', function (markerId) {
-          var markerRoot = arController.createThreeMarker(markerId);
-          markerRoot.add(sphere);
-          arScene.scene.add(markerRoot);
-        });
-        var tick = function () {
-          arScene.process();
-          rotationV += (rotationTarget - sphere.rotation.z) * 0.05;
-          sphere.rotation.z += rotationV;
-          torus.rotation.y += rotationV;
-          rotationV *= 0.8;
-          arScene.renderOn(renderer);
-          requestAnimationFrame(tick);
-        };
-        tick();
-      }
-    });
-    delete window.ARThreeOnLoad;
-  };
-  if (window.ARController && ARController.getUserMediaThreeScene) {
-    ARThreeOnLoad();
+      });
+      delete window.ARThreeOnLoad;
+    };
+    if (window.ARController && ARController.getUserMediaThreeScene) {
+      ARThreeOnLoad();
+    }
+  } catch (err) {
+    alert(err);
   }
 </script>
 </body>

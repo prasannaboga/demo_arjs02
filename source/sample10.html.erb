@@ -1,0 +1,90 @@
+---
+title: jsartoolkit5 testing
+---
+
+<style>
+
+</style>
+<div id="three-scene-card" class="card border-primary w-100 h-100">
+  <div class="card-header">jsartoolkit5 testing</div>
+  <div class="card-body" id="three-scene">
+
+  </div>
+  <div class="card-footer">
+    Data :
+    <scan id="qrcode-data">No data detected</scan>
+  </div>
+</div>
+
+<script src="javascripts/artoolkit.debug.js"></script>
+<script src="javascripts/artoolkit.api.js"></script>
+<script src="javascripts/three.js"></script>
+<script src="javascripts/artoolkit.three.js"></script>
+<script src="javascripts/instascan.min.js"></script>
+
+<script type="text/javascript">
+  try {
+    window.ARThreeOnLoad = function () {
+      ARController.getUserMediaThreeScene({
+        maxARVideoSize: 640,
+        cameraParam: 'images/camera_para-iPhone 5 rear 640x480 1.0m.dat',
+        onSuccess: function (arScene, arController, arCamera) {
+          sceneWidth = $('#three-scene').width();
+          sceneHeight = $('#three-scene').height();
+          var renderer = new THREE.WebGLRenderer({antialias: true});
+          renderer.setSize(sceneWidth, sceneHeight);
+          $('#three-scene').html(renderer.domElement);
+
+          var geometry = new THREE.BoxGeometry(2, 2, 2);
+          var material = new THREE.MeshBasicMaterial({
+            color: 'black',
+            opacity: 0.7,
+            transparent: true
+          });
+          var cube = new THREE.Mesh(geometry, material);
+          cube.position.z = 0.5;
+
+          arController.loadMarker('images/patt.hiro', function (markerId) {
+            var markerRoot = arController.createThreeMarker(markerId);
+            markerRoot.add(cube);
+            arScene.scene.add(markerRoot);
+          });
+
+          var rotationV = 0;
+          var rotationTarget = 0;
+
+          var tick = function () {
+            arScene.process();
+            rotationV += (rotationTarget - cube.rotation.z) * 0.05;
+            cube.rotation.z += rotationV;
+            rotationV *= 0.8;
+            arScene.renderOn(renderer);
+            requestAnimationFrame(tick);
+          };
+          tick();
+
+          scanner = new Instascan.Scanner({mirror: false});
+          scanner.addListener('scan', function (content) {
+            console.log(content);
+            $('#qrcode-data').html(content);
+            cube.material.color = new THREE.Color(content);
+          });
+          Instascan.Camera.getCameras().then(function (cameras) {
+            if (cameras.length > 0) {
+              scanner.start(cameras[0]);
+            } else {
+              alert('No cameras found.');
+            }
+          }).catch(function (e) {
+            alert(e.message);
+          });
+        }
+      });
+    }
+    if (window.ARController && window.ARController.getUserMediaThreeScene) {
+      ARThreeOnLoad();
+    }
+  } catch (err) {
+    alert(err);
+  }
+</script>
