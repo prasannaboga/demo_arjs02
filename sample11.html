@@ -5,7 +5,9 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport"
         content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta http-equiv="expires" content="0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+  <meta http-equiv="Pragma" content="no-cache"/>
+  <meta http-equiv="Expires" content="0"/>
   <!-- Use the title from a page's frontmatter if it has one -->
   <title>Identify QR Code position</title>
   <link rel="shortcut icon" href="about:blank">
@@ -28,12 +30,24 @@
   </div>
 </div>
 
+<script src="javascripts/three.js"></script>
 <script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
 <script type="text/javascript">
   $(document).ready(function () {
     try {
       sceneWidth = $('#three-scene').width();
       sceneHeight = $('#three-scene').height();
+
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera(75, sceneWidth / sceneHeight, 1, 1000);
+      var renderer = new THREE.WebGLRenderer({alpha: true});
+      renderer.setClearAlpha(0.0);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(sceneWidth, sceneHeight);
+      $('#three-scene').append(renderer.domElement);
+
+      
+
       var video = document.createElement("video");
       var canvasElement = document.getElementById("canvas");
       var canvasContext = canvasElement.getContext("2d");
@@ -69,10 +83,10 @@
           var imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
           var code = jsQR(imageData.data, imageData.width, imageData.height);
           if (code) {
-            drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#FF3B58");
-            drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#FF3B58");
-            drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#FF3B58");
-            drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#FF3B58");
+            drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#13e4ff");
+            drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#13e4ff");
+            drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#13e4ff");
+            drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#13e4ff");
             $('#qrcode-data').html(JSON.stringify(code, null));
           } else {
             $('#qrcode-data').html('no qr code');
