@@ -24,7 +24,7 @@
     Identify QR Code position
   </div>
   <div class="card-body" id="three-scene">
-
+    <video id="camvideo" hidden></video>
   </div>
   <div class="card-footer">
     Data :
@@ -54,7 +54,7 @@
       var canvasContext = canvasElement.getContext("2d");
       $('#three-scene').append(canvasElement);
 
-      var videoElement = document.createElement("video");
+      var videoElement = document.getElementById("camvideo");
       navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: 'environment',
