@@ -44,9 +44,43 @@
       renderer.setClearAlpha(0.0);
       renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(sceneWidth, sceneHeight);
-      $('#three-scene').append(renderer.domElement);
+      var canvasElement = renderer.domElement;
+      var canvasContext = canvasElement.getContext("2d");
+      $('#three-scene').append(canvasElement);
 
-      
+      var videoElement = document.createElement("video");
+      navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: 'environment',
+          width: sceneHeight, height: sceneWidth
+        }
+      }).then(function (stream) {
+        videoElement.srcObject = stream;
+        videoElement.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
+        videoElement.play();
+      }).catch(function (err) {
+        alert(err);
+      });
+
+      function tick() {
+        if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+          canvasContext.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+          var imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
+          $('#qrcode-data').html(imageData);
+          if (false) {
+            drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#13e4ff");
+            drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#13e4ff");
+            drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#13e4ff");
+            drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#13e4ff");
+            $('#qrcode-data').html(JSON.stringify(code, null));
+          } else {
+            $('#qrcode-data').html('no qr code');
+          }
+        }
+        requestAnimationFrame(tick);
+      }
+
+      tick();
 
 
     } catch (err) {
