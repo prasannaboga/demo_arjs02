@@ -31,16 +31,34 @@
 <script type="text/javascript">
   $(document).ready(function () {
     try {
+      sceneWidth = $('#three-scene').width();
+      sceneHeight = $('#three-scene').height();
       var video = document.createElement("video");
       var canvasElement = document.getElementById("canvas");
       var canvasContext = canvasElement.getContext("2d");
 
-      navigator.mediaDevices.getUserMedia({video: {facingMode: 'environment'}}).then(function (stream) {
+      navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: 'environment',
+          width: sceneHeight, height: sceneWidth
+        }
+      }).then(function (stream) {
         video.srcObject = stream;
         video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
         video.play();
-        requestAnimationFrame(tick);
+        //requestAnimationFrame(tick);
+      }).catch(function (err) {
+        alert(err);
       });
+
+      function drawLine(begin, end, color) {
+        canvasContext.beginPath();
+        canvasContext.moveTo(begin.x, begin.y);
+        canvasContext.lineTo(end.x, end.y);
+        canvasContext.lineWidth = 4;
+        canvasContext.strokeStyle = color;
+        canvasContext.stroke();
+      }
 
       function tick() {
         if (video.readyState === video.HAVE_ENOUGH_DATA) {
@@ -50,13 +68,16 @@
           var imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
           var code = jsQR(imageData.data, imageData.width, imageData.height);
           if (code) {
-            $('#qrcode-data').html(code);
+            drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#FF3B58");
+            $('#qrcode-data').html(JSON.stringify(code, null));
           } else {
             $('#qrcode-data').html('no qr code');
           }
         }
         requestAnimationFrame(tick);
       }
+
+      tick();
     } catch (err) {
       alert(err.message)
     }
