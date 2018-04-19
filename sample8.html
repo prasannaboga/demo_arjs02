@@ -112,8 +112,9 @@
 
     scanner = new Instascan.Scanner({video: document.getElementById('camvideo'), mirror: false});
     scanner.addListener('scan', function (content) {
-      console.log(content);
+      //console.log(content);
       if (previousContent != content) {
+        previousContent = content;
         scanCounter += 1
         $('#qrcode-data').html(content);
         $('#scan-counter').text(scanCounter);
