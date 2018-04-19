@@ -22,7 +22,7 @@
   <div id="three-scene-card" class="card border-primary w-100 h-100">
   <div class="card-header">Identify QR Code position</div>
   <div class="card-body" id="three-scene">
-    <canvas id="canvas"></canvas>
+
   </div>
   <div class="card-footer">
     Data :
@@ -45,8 +45,6 @@
       renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(sceneWidth, sceneHeight);
       $('#three-scene').append(renderer.domElement);
-
-      
 
       var video = document.createElement("video");
       var canvasElement = document.getElementById("canvas");
