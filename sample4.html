@@ -31,6 +31,7 @@
 <script src="javascripts/three.js"></script>
 <script src="javascripts/three.OrbitControls.js"></script>
 <script src="javascripts/artoolkit.three.js"></script>
+ <script src="javascripts/instascan.min.js"></script>
 <script type="text/javascript">
   try {
     window.ARThreeOnLoad = function () {
@@ -67,7 +68,6 @@
           });
           var cube = new THREE.Mesh(geometry, material);
           cube.position.z = 0.5;
-
           arController.loadMarker('images/patt.hiro', function (markerId) {
             var markerRoot = arController.createThreeMarker(markerId);
             markerRoot.add(cube);
@@ -82,13 +82,11 @@
             requestAnimationFrame(tick);
           };
           tick();
-
           scanner = new Instascan.Scanner({mirror: false});
           scanner.addListener('scan', function (content) {
-            alert(content);
+            console.log(content);
             cube.material.color = new THREE.Color(content);
           });
-
           Instascan.Camera.getCameras().then(function (cameras) {
             if (cameras.length > 0) {
               scanner.start(cameras[0]);

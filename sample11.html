@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Use the title from a page's frontmatter if it has one -->
+  <title>Identify QR Code position</title>
+  <link rel="shortcut icon" href="about:blank">
+  <link href="stylesheets/bootstrap.css" rel="stylesheet" />
+  <link href="stylesheets/site.css" rel="stylesheet" />
+  <script src="javascripts/jquery-3.3.1.js"></script>
+  <script src="javascripts/underscore.js"></script>
+  <script src="javascripts/site.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+  <div id="three-scene-card" class="card border-primary w-100 h-100">
+  <div class="card-header">Identify QR Code position</div>
+  <div class="card-body" id="three-scene">
+    <canvas id="canvas"></canvas>
+  </div>
+  <div class="card-footer">
+    Data :
+    <scan id="qrcode-data">No data detected</scan>
+  </div>
+</div>
+
+<script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
+<script type="text/javascript">
+  $(document).ready(function () {
+    try {
+      var video = document.createElement("video");
+      var canvasElement = document.getElementById("canvas");
+      var canvasContext = canvasElement.getContext("2d");
+
+      navigator.mediaDevices.getUserMedia({video: {facingMode: 'environment'}}).then(function (stream) {
+        video.srcObject = stream;
+        video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
+        video.play();
+        requestAnimationFrame(tick);
+      });
+
+      function tick() {
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+          canvasElement.height = video.videoHeight;
+          canvasElement.width = video.videoWidth;
+          canvasContext.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+          var imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
+          var code = jsQR(imageData.data, imageData.width, imageData.height);
+          if (code) {
+            $('#qrcode-data').html(code);
+          } else {
+            $('#qrcode-data').html('no qr code');
+          }
+        }
+        requestAnimationFrame(tick);
+      }
+    } catch (err) {
+      alert(err.message)
+    }
+  });
+</script>
+
+
+</div>
+
+</body>
+</html>
