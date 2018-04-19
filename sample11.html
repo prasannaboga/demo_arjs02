@@ -20,13 +20,18 @@
 <body>
 <div class="container-fluid">
   <div id="three-scene-card" class="card border-primary w-100 h-100">
-  <div class="card-header">Identify QR Code position</div>
+  <div class="card-header clearfix">
+    Identify QR Code position
+  </div>
   <div class="card-body" id="three-scene">
 
   </div>
   <div class="card-footer">
     Data :
     <scan id="qrcode-data">No data detected</scan>
+  </div>
+  <div class="card-footer bg-transparent border-info" id="debug">
+
   </div>
 </div>
 
@@ -35,6 +40,7 @@
 <script type="text/javascript">
   $(document).ready(function () {
     try {
+      $debug = $('#debug');
       sceneWidth = $('#three-scene').width();
       sceneHeight = $('#three-scene').height();
 
@@ -63,7 +69,9 @@
       });
 
       function tick() {
+        $debug.text('tick started');
         if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+          $debug.text('inside videoElement');
           canvasContext.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
           var imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
           $('#qrcode-data').html(imageData);
@@ -81,7 +89,6 @@
       }
 
       tick();
-
 
     } catch (err) {
       alert(err.message)
