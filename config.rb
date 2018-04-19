@@ -43,6 +43,8 @@ page '/*.txt', layout: false
 activate :relative_assets
 set :relative_links, true
 
+#activate :livereload
+
 configure :build do
   activate :minify_css
   activate :minify_javascript, ignore: [/webcodecamjquery/]

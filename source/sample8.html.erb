@@ -8,8 +8,7 @@ title: threejs + instascan
     <video id="camvideo" hidden></video>
   </div>
   <div class="card-footer">
-    Data :
-    <scan id="qrcode-data">No data detected</scan>
+    Data : <span id="scan-counter">0</span>&nbsp;<span id="qrcode-data">No data detected</span>
   </div>
 </div>
 
@@ -93,11 +92,19 @@ title: threejs + instascan
     };
     animate();
 
+    var scanCounter = parseInt($('#scan-counter').text());
+    var previousContent = '';
+
     scanner = new Instascan.Scanner({video: document.getElementById('camvideo'), mirror: false});
     scanner.addListener('scan', function (content) {
-      console.log(content);
-      $('#qrcode-data').html(content);
-      cube.material.color = new THREE.Color(content);
+      //console.log(content);
+      if (previousContent != content) {
+        previousContent = content;
+        scanCounter += 1
+        $('#qrcode-data').html(content);
+        $('#scan-counter').text(scanCounter);
+        cube.material.color = new THREE.Color(content);
+      }
     });
     scanner.addListener('active', function () {
       $('#qrcode-data').html('Active');
