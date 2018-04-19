@@ -46,54 +46,9 @@
       renderer.setSize(sceneWidth, sceneHeight);
       $('#three-scene').append(renderer.domElement);
 
-      var video = document.createElement("video");
-      var canvasElement = document.getElementById("canvas");
-      var canvasContext = canvasElement.getContext("2d");
+      
 
-      navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: 'environment',
-          width: sceneHeight, height: sceneWidth
-        }
-      }).then(function (stream) {
-        video.srcObject = stream;
-        video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
-        video.play();
-        //requestAnimationFrame(tick);
-      }).catch(function (err) {
-        alert(err);
-      });
 
-      function drawLine(begin, end, color) {
-        canvasContext.beginPath();
-        canvasContext.moveTo(begin.x, begin.y);
-        canvasContext.lineTo(end.x, end.y);
-        canvasContext.lineWidth = 4;
-        canvasContext.strokeStyle = color;
-        canvasContext.stroke();
-      }
-
-      function tick() {
-        if (video.readyState === video.HAVE_ENOUGH_DATA) {
-          canvasElement.height = video.videoHeight;
-          canvasElement.width = video.videoWidth;
-          canvasContext.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
-          var imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
-          var code = jsQR(imageData.data, imageData.width, imageData.height);
-          if (code) {
-            drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#13e4ff");
-            drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#13e4ff");
-            drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#13e4ff");
-            drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#13e4ff");
-            $('#qrcode-data').html(JSON.stringify(code, null));
-          } else {
-            $('#qrcode-data').html('no qr code');
-          }
-        }
-        requestAnimationFrame(tick);
-      }
-
-      tick();
     } catch (err) {
       alert(err.message)
     }
