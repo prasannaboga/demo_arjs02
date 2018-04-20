@@ -11,16 +11,20 @@
   <!-- Use the title from a page's frontmatter if it has one -->
   <title>threejs + instascan</title>
   <link rel="shortcut icon" href="about:blank">
-  <link href="stylesheets/bootstrap.css" rel="stylesheet" />
+  <link href="https://bootswatch.com/4/minty/bootstrap.css" rel="stylesheet" />
   <link href="stylesheets/site.css" rel="stylesheet" />
-  <script src="javascripts/jquery-3.3.1.js"></script>
-  <script src="javascripts/underscore.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.0/underscore-min.js"></script>
   <script src="javascripts/site.js"></script>
 </head>
 <body>
 <div class="container-fluid">
   <div id="three-scene-card" class="card border-primary w-100 h-100">
-  <div class="card-header">threejs + webcam</div>
+  <div class="card-header clearfix">
+    threejs + webcam
+    <select id="listCameras" class="float-right" style="width: auto;">
+    </select>
+  </div>
   <div class="card-body" id="three-scene">
     <video id="camvideo" hidden></video>
   </div>
@@ -29,8 +33,8 @@
   </div>
 </div>
 
-<script src="javascripts/instascan.min.js"></script>
-<script src="javascripts/three.js"></script>
+<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+<script src="https://threejs.org/build/three.js"></script>
 <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 <script type="text/javascript">
 
@@ -132,7 +136,7 @@
 
     Instascan.Camera.getCameras().then(function (cameras) {
       if (cameras.length > 0) {
-        scanner.start(cameras[1]);
+        scanner.start(cameras[0]);
       } else {
         document.getElementById('qrcode-data').innerHTML = 'No cameras found.'
       }

@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+  <meta http-equiv="Pragma" content="no-cache"/>
+  <meta http-equiv="Expires" content="0"/>
+  <!-- Use the title from a page's frontmatter if it has one -->
+  <title>Identify QR Code position</title>
+  <link rel="shortcut icon" href="about:blank">
+  <link href="https://bootswatch.com/4/minty/bootstrap.css" rel="stylesheet" />
+  <link href="stylesheets/site.css" rel="stylesheet" />
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.0/underscore-min.js"></script>
+  <script src="javascripts/site.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="card-group mt-4">
+  <div class="card">
+    <video id="video" loop="" controls="" autoplay webkit-playsinline class="card-img-top"></video>
+    <div class="card-body">
+      <h5 class="card-title">Video</h5>
+    </div>
+  </div>
+  <div id="canvasCard" class="card">
+    <div class="card-body">
+      <h5 class="card-title">Canvas</h5>
+    </div>
+  </div>
+  <div class="card">
+    <video id="v" loop="" controls="" autoplay webkit-playsinline class="card-img-top"></video>
+    <div class="card-body">
+      <h5 class="card-title">Debug</h5>
+    </div>
+  </div>
+</div>
+
+<script src="https://rawgit.com/artoolkit/jsartoolkit5/master/build/artoolkit.debug.js"></script>
+<script src="https://rawgit.com/artoolkit/jsartoolkit5/master/js/artoolkit.api.js"></script>
+<script src="https://threejs.org/build/three.js"></script>
+<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+<script src="https://rawgit.com/artoolkit/jsartoolkit5/master/js/artoolkit.three.js"></script>
+
+<script type="text/javascript">
+  try {
+    //enable camera and stream video
+    videoElement = document.getElementById('video');
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment'
+      }
+    }).then(function (stream) {
+      videoElement.srcObject = stream;
+      videoElement.play();
+    }).catch(function (err) {
+      alert(err);
+    });
+
+    renderer = new THREE.WebGLRenderer({alpha: true});
+    renderer.setClearAlpha(0.0);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    $("#video").bind("loadedmetadata", function () {
+      renderer.setSize(this.clientWidth, this.clientHeight);
+      $('#canvasCard').prepend(renderer.domElement);
+    });
+
+
+
+
+  } catch (error) {
+    alert(error);
+  }
+</script>
+
+</div>
+
+</body>
+</html>
