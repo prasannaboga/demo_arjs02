@@ -15,7 +15,8 @@ title: Identify QR Code position
   </div>
 </div>
 
-<script src="javascripts/three.js"></script>
+<script src="https://threejs.org/build/three.js"></script>
+<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
 <script type="text/javascript">
   $(document).ready(function () {
@@ -33,7 +34,7 @@ title: Identify QR Code position
 
       camera = new THREE.PerspectiveCamera(75, sceneWidth / sceneHeight, 1, 1000);
       camera.position.set(0, 0, 5);
-      camera.lookAt(new THREE.Vector3(0, 0, 0));
+      //camera.lookAt(new THREE.Vector3(0, 0, 0));
 
       controls = new THREE.OrbitControls(camera);
       controls.update();
@@ -50,19 +51,14 @@ title: Identify QR Code position
 
       lineMaterial = new THREE.LineBasicMaterial({
         color: 'green',
-        linewidth: 4
+        linewidth: 5
       });
-
-      lineGeometry = new THREE.Geometry();
-      line = new THREE.Line(lineGeometry, lineMaterial);
-      scene.add(line);
 
       //enable camera and stream video
       videoElement = document.createElement("video");
       navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: 'environment',
-          width: sceneHeight, height: sceneWidth
+          facingMode: 'environment'
         }
       }).then(function (stream) {
         videoElement.srcObject = stream;
@@ -91,6 +87,22 @@ title: Identify QR Code position
       //backgroundScene.add(backgroundCamera);
       backgroundScene.add(movieMesh);
 
+      /*function drawLine(begin, end, color) {
+        videoCanvasContext.beginPath();
+        videoCanvasContext.moveTo(begin.x, begin.y);
+        videoCanvasContext.lineTo(end.x, end.y);
+        videoCanvasContext.lineWidth = 10;
+        videoCanvasContext.strokeStyle = color;
+        videoCanvasContext.stroke();
+      }
+
+      drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#FF3B58");
+      drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#FF3B58");
+      drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#FF3B58");
+      drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#FF3B58");*/
+
+      qrCode = {};
+
       function tick() {
         //renderer.clear();
         if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
@@ -98,17 +110,15 @@ title: Identify QR Code position
           videoTexture.needsUpdate = true;
           var imageData = videoCanvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
           //console.log(imageData);
-          var code = jsQR(imageData.data, imageData.width, imageData.height);
-          //console.log(code);
-          if (code) {
-            cube.material.color = new THREE.Color(code.data);
-            var vertices = line.geometry.vertices;
-            vertices.push(new THREE.Vector2(code.location.topLeftCorner.x, code.location.topRightCorner.x));
-            vertices.push(new THREE.Vector2(code.location.topRightCorner.x, code.location.bottomRightCorner.x));
-            vertices.push(new THREE.Vector2(code.location.bottomRightCorner.x, code.location.bottomLeftCorner.x));
-            line.geometry.verticesNeedUpdate = true;
-          } else {
-            $('#qrcode-data').text('No QR Code Found after tick');
+          if (_.isEmpty(qrCode)) {
+            qrCode = jsQR(imageData.data, imageData.width, imageData.height);
+            //console.log(qrCode);
+            if (qrCode) {
+              $('#qrcode-data').text(qrCode.data);
+              console.log(qrCode);
+            } else {
+              $('#qrcode-data').text('No QR Code Found after tick');
+            }
           }
         }
         renderer.autoClear = false;
@@ -119,6 +129,7 @@ title: Identify QR Code position
       }
 
       tick();
+
     } catch (err) {
       alert(err.message)
     }

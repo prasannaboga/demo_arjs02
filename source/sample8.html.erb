@@ -3,7 +3,11 @@ title: threejs + instascan
 ---
 
 <div id="three-scene-card" class="card border-primary w-100 h-100">
-  <div class="card-header">threejs + webcam</div>
+  <div class="card-header clearfix">
+    threejs + webcam
+    <select id="listCameras" class="float-right" style="width: auto;">
+    </select>
+  </div>
   <div class="card-body" id="three-scene">
     <video id="camvideo" hidden></video>
   </div>
@@ -12,8 +16,8 @@ title: threejs + instascan
   </div>
 </div>
 
-<script src="javascripts/instascan.min.js"></script>
-<script src="javascripts/three.js"></script>
+<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+<script src="https://threejs.org/build/three.js"></script>
 <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 <script type="text/javascript">
 
@@ -115,7 +119,7 @@ title: threejs + instascan
 
     Instascan.Camera.getCameras().then(function (cameras) {
       if (cameras.length > 0) {
-        scanner.start(cameras[1]);
+        scanner.start(cameras[0]);
       } else {
         document.getElementById('qrcode-data').innerHTML = 'No cameras found.'
       }
