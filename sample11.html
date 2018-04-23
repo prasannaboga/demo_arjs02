@@ -104,7 +104,7 @@
       //backgroundScene.add(backgroundCamera);
       backgroundScene.add(movieMesh);
 
-      /*function drawLine(begin, end, color) {
+      function drawLine(begin, end, color) {
         videoCanvasContext.beginPath();
         videoCanvasContext.moveTo(begin.x, begin.y);
         videoCanvasContext.lineTo(end.x, end.y);
@@ -113,10 +113,6 @@
         videoCanvasContext.stroke();
       }
 
-      drawLine(code.location.topLeftCorner, code.location.topRightCorner, "#FF3B58");
-      drawLine(code.location.topRightCorner, code.location.bottomRightCorner, "#FF3B58");
-      drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#FF3B58");
-      drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#FF3B58");*/
 
       qrCode = {};
 
@@ -127,10 +123,14 @@
           videoTexture.needsUpdate = true;
           var imageData = videoCanvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
           //console.log(imageData);
-          if (_.isEmpty(qrCode)) {
+          if (true) {
             qrCode = jsQR(imageData.data, imageData.width, imageData.height);
             //console.log(qrCode);
             if (qrCode) {
+              drawLine(qrCode.location.topLeftCorner, qrCode.location.topRightCorner, "#FF3B58");
+              drawLine(qrCode.location.topRightCorner, qrCode.location.bottomRightCorner, "#FF3B58");
+              drawLine(qrCode.location.bottomRightCorner, qrCode.location.bottomLeftCorner, "#FF3B58");
+              drawLine(qrCode.location.bottomLeftCorner, qrCode.location.topLeftCorner, "#FF3B58");
               $('#qrcode-data').text(qrCode.data);
               console.log(qrCode);
             } else {
