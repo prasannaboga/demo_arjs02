@@ -3,8 +3,8 @@ title: Identify QR Code position
 ---
 
 <div class="card-group mt-4">
-  <div class="card">
-    <video id="video" loop="" controls="" autoplay webkit-playsinline class="card-img-top"></video>
+  <div id="videoCard" class="card">
+    <video id="video" loop="" controls="" autoplay class="card-img-top"></video>
     <div class="card-body">
       <h5 class="card-title">Video</h5>
     </div>
@@ -14,8 +14,7 @@ title: Identify QR Code position
       <h5 class="card-title">Canvas</h5>
     </div>
   </div>
-  <div class="card">
-    <video id="v" loop="" controls="" autoplay webkit-playsinline class="card-img-top"></video>
+  <div id="debugCard" class="card">
     <div class="card-body">
       <h5 class="card-title">Debug</h5>
     </div>
@@ -30,6 +29,13 @@ title: Identify QR Code position
 
 <script type="text/javascript">
   try {
+    //override
+    ARController.prototype.debugSetup = function () {
+      $('#debugCard').prepend(this.canvas);
+      this.setDebugMode(1);
+      this._bwpointer = this.getProcessingImage();
+    };
+
     //enable camera and stream video
     videoElement = document.getElementById('video');
     navigator.mediaDevices.getUserMedia({
@@ -43,18 +49,75 @@ title: Identify QR Code position
       alert(err);
     });
 
-    renderer = new THREE.WebGLRenderer({alpha: true});
-    renderer.setClearAlpha(0.0);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    $("#video").bind("loadedmetadata", function () {
-      renderer.setSize(this.clientWidth, this.clientHeight);
+    function init(width, height) {
+      renderer = new THREE.WebGLRenderer({alpha: false});
+      //renderer.setClearAlpha(0.0);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(width, height);
       $('#canvasCard').prepend(renderer.domElement);
+
+      scene = new THREE.Scene();
+      camera = new THREE.Camera();
+      scene.add(camera);
+
+      boxGeometry = new THREE.BoxGeometry(2, 2, 2);
+      boxMaterial = new THREE.MeshBasicMaterial({color: 0x00ff00});
+      box = new THREE.Mesh(boxGeometry, boxMaterial);
+
+      markerRoot = new THREE.Object3D();
+      markerRoot.wasVisible = false;
+      markerRoot.markerMatrix = new Float64Array(12);
+      markerRoot.matrixAutoUpdate = false;
+      camera.matrixAutoUpdate = false;
+      markerRoot.add(box);
+      scene.add(markerRoot);
+
+      var arController = null;
+      var animate = function () {
+        requestAnimationFrame(animate);
+        if (!arController) {
+          return;
+        }
+        arController.detectMarker(videoElement);
+        var markerNum = arController.getMarkerNum();
+        if (markerNum > 0) {
+          if (markerRoot.visible) {
+            arController.getTransMatSquareCont(0, 1, markerRoot.markerMatrix, markerRoot.markerMatrix);
+          } else {
+            arController.getTransMatSquare(0 /* Marker index */, 1 /* Marker width */, markerRoot.markerMatrix);
+          }
+          markerRoot.visible = true;
+          arController.transMatToGLMat(markerRoot.markerMatrix, markerRoot.matrix.elements);
+        } else {
+          markerRoot.visible = false;
+        }
+        arController.debugDraw();
+
+        // Render the scene.
+        renderer.autoClear = false;
+        renderer.clear();
+        box.rotation.x += 0.01;
+        box.rotation.y += 0.01;
+        renderer.render(scene, camera);
+      };
+
+      animate();
+
+      cameraParam = new ARCameraParam();
+      cameraParam.onload = function () {
+        arController = new ARController(width, height, cameraParam);
+        arController.debugSetup();
+        var camera_mat = arController.getCameraMatrix();
+        camera.projectionMatrix.fromArray(camera_mat);
+      };
+      cameraParam.load('https://artoolkit.github.io/jsartoolkit5/examples/Data/camera_para.dat');
+    }
+
+    $("#video").bind("loadedmetadata", function () {
+      init(this.clientWidth, this.clientHeight);
     });
-
-
-
-
   } catch (error) {
     alert(error);
   }
 </script>
+
