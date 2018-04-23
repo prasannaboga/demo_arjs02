@@ -73,7 +73,7 @@ layout: false
           });
           var cube = new THREE.Mesh(geometry, material);
           cube.position.z = 0.5;
-          arController.loadMarker('images/patt.hiro', function (markerId) {
+          arController.loadMarker('images/marker16.pat', function (markerId) {
             var markerRoot = arController.createThreeMarker(markerId);
             markerRoot.add(cube);
             arScene.scene.add(markerRoot);

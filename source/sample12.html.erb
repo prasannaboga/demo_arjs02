@@ -80,7 +80,9 @@ title: Identify QR Code position
         }
         arController.detectMarker(videoElement);
         var markerNum = arController.getMarkerNum();
+        console.log('Debug :: marker numbers ' + markerNum);
         if (markerNum > 0) {
+          console.log('Debug :: markerRoot ' + markerRoot.visible);
           if (markerRoot.visible) {
             arController.getTransMatSquareCont(0, 1, markerRoot.markerMatrix, markerRoot.markerMatrix);
           } else {
@@ -107,6 +109,13 @@ title: Identify QR Code position
       cameraParam.onload = function () {
         arController = new ARController(width, height, cameraParam);
         arController.debugSetup();
+
+        arController.loadMarker('images/marker16.pat', function (markerId) {
+          var markerRoot = arController.createThreeMarker(markerId);
+          markerRoot.add(box);
+          scene.add(markerRoot);
+        });
+
         var camera_mat = arController.getCameraMatrix();
         camera.projectionMatrix.fromArray(camera_mat);
       };
