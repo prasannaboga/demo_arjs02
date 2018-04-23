@@ -80,9 +80,7 @@ title: Identify QR Code position
         }
         arController.detectMarker(videoElement);
         var markerNum = arController.getMarkerNum();
-        console.log('Debug :: marker numbers ' + markerNum);
         if (markerNum > 0) {
-          console.log('Debug :: markerRoot ' + markerRoot.visible);
           if (markerRoot.visible) {
             arController.getTransMatSquareCont(0, 1, markerRoot.markerMatrix, markerRoot.markerMatrix);
           } else {

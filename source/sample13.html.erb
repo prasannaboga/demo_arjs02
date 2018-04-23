@@ -1,0 +1,215 @@
+---
+title: Sample13
+---
+
+<style type="text/css">
+  .portrait canvas {
+    transform-origin: 0 0;
+    transform: rotate(-90deg) translateX(-100%);
+  }
+
+  .desktop canvas {
+    transform: scale(-1, 1);
+  }
+</style>
+
+<div id="videoCard" class="card mt-1">
+  <!--<video id="video" loop="" controls="" autoplay class="card-img-top"></video>-->
+  <div class="card-body">
+    <h5 class="card-title">
+      Sample13
+    </h5>
+  </div>
+</div>
+
+<script src="https://rawgit.com/artoolkit/jsartoolkit5/master/build/artoolkit.debug.js"></script>
+<script src="https://rawgit.com/artoolkit/jsartoolkit5/master/js/artoolkit.api.js"></script>
+<script src="https://threejs.org/build/three.js"></script>
+<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+<script src="https://rawgit.com/artoolkit/jsartoolkit5/master/js/artoolkit.three.js"></script>
+
+<script type="text/javascript">
+  try {
+    ARController.getUserMedia = function (configuration) {
+
+      var facing = configuration.facingMode || 'environment';
+
+      var onSuccess = configuration.onSuccess;
+      var onError = configuration.onError || function (err) {
+        console.error("ARController.getUserMedia", err);
+      };
+
+      var video = document.createElement('video');
+
+      var initProgress = function () {
+        if (this.videoWidth !== 0) {
+          onSuccess(video);
+        }
+      };
+
+      var readyToPlay = false;
+      var eventNames = [
+        'touchstart', 'touchend', 'touchmove', 'touchcancel',
+        'click', 'mousedown', 'mouseup', 'mousemove',
+        'keydown', 'keyup', 'keypress', 'scroll'
+      ];
+      var play = function () {
+        if (readyToPlay) {
+          video.play();
+          if (!video.paused) {
+            eventNames.forEach(function (eventName) {
+              window.removeEventListener(eventName, play, true);
+            });
+          }
+        }
+      };
+      eventNames.forEach(function (eventName) {
+        window.addEventListener(eventName, play, true);
+      });
+
+      var success = function (stream) {
+        video.addEventListener('loadedmetadata', initProgress, false);
+        video.src = window.URL.createObjectURL(stream);
+        readyToPlay = true;
+        play(); // Try playing without user input, should work on non-Android Chrome
+      };
+
+      var constraints = {};
+      var mediaDevicesConstraints = {};
+      if (configuration.width) {
+        mediaDevicesConstraints.width = configuration.width;
+        if (typeof configuration.width === 'object') {
+          if (configuration.width.max) {
+            constraints.maxWidth = configuration.width.max;
+          }
+          if (configuration.width.min) {
+            constraints.minWidth = configuration.width.max;
+          }
+        } else {
+          constraints.maxWidth = configuration.width;
+        }
+      }
+
+      if (configuration.height) {
+        mediaDevicesConstraints.height = configuration.height;
+        if (typeof configuration.height === 'object') {
+          if (configuration.height.max) {
+            constraints.maxHeight = configuration.height.max;
+          }
+          if (configuration.height.min) {
+            constraints.minHeight = configuration.height.max;
+          }
+        } else {
+          constraints.maxHeight = configuration.height;
+        }
+      }
+
+      mediaDevicesConstraints.facingMode = facing;
+
+      navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+      var hdConstraints = {
+        audio: false,
+        video: {
+          facingMode: 'environment'
+        }
+      };
+
+      if (false) {
+        // if ( navigator.mediaDevices || window.MediaStreamTrack) {
+        if (navigator.mediaDevices) {
+          navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: mediaDevicesConstraints
+          }).then(success, onError);
+        } else {
+          MediaStreamTrack.getSources(function (sources) {
+            var facingDir = mediaDevicesConstraints.facingMode;
+            if (facing && facing.exact) {
+              facingDir = facing.exact;
+            }
+            for (var i = 0; i < sources.length; i++) {
+              if (sources[i].kind === 'video' && sources[i].facing === facingDir) {
+                hdConstraints.video.mandatory.sourceId = sources[i].id;
+                break;
+              }
+            }
+            if (facing && facing.exact && !hdConstraints.video.mandatory.sourceId) {
+              onError('Failed to get camera facing the wanted direction');
+            } else {
+              if (navigator.getUserMedia) {
+                navigator.getUserMedia(hdConstraints, success, onError);
+              } else {
+                onError('navigator.getUserMedia is not supported on your browser');
+              }
+            }
+          });
+        }
+      } else {
+        if (navigator.getUserMedia) {
+          navigator.getUserMedia(hdConstraints, success, onError);
+        } else {
+          onError('navigator.getUserMedia is not supported on your browser');
+        }
+      }
+
+      return video;
+    };
+
+
+    window.ARThreeOnLoad = function (params) {
+      ARController.getUserMediaThreeScene({
+        maxARVideoSize: 640,
+        cameraParam: 'images/camera_para.dat',
+        onSuccess: function (arScene, arController, arCamera) {
+          renderer = new THREE.WebGLRenderer({antialias: true});
+          if (arController.orientation === 'portrait') {
+            var w = ($('#videoCard').innerWidth() / arController.videoHeight) * arController.videoWidth;
+            var h = $('#videoCard').innerWidth();
+            renderer.setSize(w, h);
+            renderer.domElement.style.paddingBottom = (w - h) + 'px';
+          } else {
+            if (/Android|mobile|iPad|iPhone/i.test(navigator.userAgent)) {
+              renderer.setSize($('#videoCard').innerWidth(), ($('#videoCard').innerWidth() / arController.videoWidth) * arController.videoHeight);
+            } else {
+              renderer.setSize(arController.videoWidth, arController.videoHeight);
+              document.body.className += ' desktop';
+            }
+          }
+          $('#videoCard').prepend(renderer.domElement);
+
+
+          var geometry = new THREE.BoxGeometry(2, 2, 2);
+          var material = new THREE.MeshBasicMaterial({
+            color: 'black',
+            opacity: 0.7,
+            transparent: true
+          });
+          var cube = new THREE.Mesh(geometry, material);
+          cube.position.z = 0.5;
+
+          arController.loadMarker('images/marker16.pat', function (markerId) {
+            console.log('markerId - ' + markerId);
+            var markerRoot = arController.createThreeMarker(markerId);
+            markerRoot.add(cube);
+            arScene.scene.add(markerRoot);
+          });
+
+          var tick = function () {
+            arScene.process();
+            cube.rotation.z += 0.01;
+            arScene.renderOn(renderer);
+            requestAnimationFrame(tick);
+          };
+          tick();
+        }
+      })
+    };
+
+    if (window.ARController && window.ARController.getUserMediaThreeScene) {
+      ARThreeOnLoad()
+    }
+  } catch (error) {
+    alert(error.name + " : " + error.message);
+  }
+
+</script>
