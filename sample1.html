@@ -1,16 +1,17 @@
 <html>
 <head>
   <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
-  <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
+  <!--<script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>-->
 </head>
 
 <body style='margin : 0px; overflow: hidden;'>
-<a-scene embedded arjs>
-  <a-marker type='pattern' patternUrl='images/patt.hiro'>
-    <a-box position='0 0.5 0' material='color: black;'></a-box>
-    <a-text position='1 3 0' value="Hello, World!"></a-text>
-  </a-marker>
+<!-- We define a scene -->
+<a-scene artoolkit>
+  <!-- add a box in the scene -->
+  <a-box></a-box>
+  <!-- add a basic camera -->
   <a-entity camera></a-entity>
 </a-scene>
+
 </body>
 </html>
