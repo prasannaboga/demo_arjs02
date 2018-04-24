@@ -1,66 +1,33 @@
-<script src="javascripts/instascan.min.js"></script>
-<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+---
+title: New Sample 1
+layout: false
+---
 
-<div class="preview-container border border-primary">
-  <video id="preview" class="img-fluid"></video>
-</div>
-<div class="alert alert-dismissible alert-info display-data">
-  Date : <span id="qrcode-data">No Data Detected</span>
-  <span class="float-right"><%= link_to 'Index', '/index.html' %></span>
-</div>
+<html>
+<head>
+  <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+  <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
+  <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.0.2/dist/aframe-extras.min.js"></script>
+</head>
 
-<a-scene>
+<body style='margin : 0px; overflow: hidden;'>
 
+<a-scene embedded arjs='sourceType: webcam;'>
+  <a-assets>
+    <a-asset-item id="model" src="models/constructor-worker-threejs/constructor-worker.json">
+    </a-asset-item>
+  </a-assets>
+  <a-marker preset='custom' type='pattern' url='images/pattern-qrcode-square.patt'>
+    <!--<a-box position='0 0 0' material='color: red;'></a-box>-->
+    <a-entity object-model="src:#model" scale="0.5 0.5 0.5"></a-entity>
+  </a-marker>
+  <a-entity camera></a-entity>
 </a-scene>
+
 
 <script type="text/javascript">
 
-  // register a qr-code-box
-  AFRAME.registerComponent('qr-code-box', {
-    schema: {},
-    init: function () {
-      // This will be called after the entity has properly attached and loaded.
-      console.log('I am ready! - qr-code-box');
-    }
-  });
-
-  var sceneEl = document.querySelector('a-scene');
-  var entityEl = document.createElement('a-entity');
-  entityEl.setAttribute('geometry', {
-    primitive: 'box'
-  });
-  entityEl.setAttribute('position', {x: 0, y: 1.25, z: -5});
-  sceneEl.appendChild(entityEl);
-  entityEl.setAttribute('color', 'blue');
-
-  //entityEl.setAttribute('visible', false);
-
-
-  // using instanscan for qr code reader
-  scanner = new Instascan.Scanner({video: document.getElementById('preview'), mirror: false});
-  scanner.addListener('scan', function (content) {
-    console.log(content);
-    document.getElementById('qrcode-data').innerHTML = content;
-    if (content == 'blue') {
-      entityEl.setAttribute('color', 'blue');
-    } else if (content == 'green') {
-      entityEl.setAttribute('color', 'green');
-    } else if (content == 'red') {
-      entityEl.setAttribute('color', 'red');
-    } else {
-      entityEl.setAttribute('color', 'orange');
-    }
-    entityEl.setAttribute('visible', true);
-  });
-  Instascan.Camera.getCameras().then(function (cameras) {
-    if (cameras.length > 0) {
-      scanner.start(cameras[1]);
-    } else {
-      console.error('No cameras found.');
-      document.getElementById('qrcode-data').innerHTML = 'No cameras found.'
-    }
-  }).catch(function (e) {
-    //console.error(e);
-    document.getElementById('qrcode-data').innerHTML = e.message
-  });
 </script>
+
+</body>
+</html>
