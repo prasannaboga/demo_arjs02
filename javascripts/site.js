@@ -1,1 +1,1 @@
-$(document).ready(function(){try{window.selectedCamera="",navigator.mediaDevices.enumerateDevices().then(function(e){var a=[];$(e).each(function(e,n){0===e&&(window.selectedCamera=n),"videoinput"===n.kind&&(a.push(n),$("#listCameras").append($("<option>",{value:n.deviceId,html:n.label})))})})["catch"](function(e){alert(e.message),console.error(e)})}catch(e){alert(e.message),console.error(e)}});
+$(document).ready(function(){});

@@ -36,7 +36,7 @@
   try {
     window.ARThreeOnLoad = function () {
       ARController.getUserMediaThreeScene({
-        maxARVideoSize: 320, cameraParam: 'images/camera_para-iPhone 5 rear 640x480 1.0m.dat',
+        maxARVideoSize: 640, cameraParam: 'images/camera_para-iPhone 5 rear 640x480 1.0m.dat',
         onSuccess: function (arScene, arController, arCamera) {
           document.body.className = arController.orientation;
           var renderer = new THREE.WebGLRenderer({antialias: true});
