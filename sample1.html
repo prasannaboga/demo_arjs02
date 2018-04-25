@@ -12,6 +12,8 @@
   <a-marker preset='custom' type='pattern'
             url='https://prasannaboga.github.io/demo_arjs02/images/pattern-qrcode-square.patt'>
     <a-entity id="objectEntity" animation-mixer></a-entity>
+    <a-text id="aText" color="red"
+            position="0 0 0" rotation="0 90 0" scale="1 1 1"></a-text>
   </a-marker>
   <a-entity camera></a-entity>
 </a-scene>
@@ -20,7 +22,9 @@
 <script type="text/javascript">
 
   objectEntity = document.getElementById('objectEntity');
+  aText = document.getElementById('aText');
 
+  undefinedObject = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Monster/glTF/Monster.gltf';
   testData = {
     'pink': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF/Duck.gltf',
     'green': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoxAnimated/glTF/BoxAnimated.gltf',
@@ -40,9 +44,18 @@
       var imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
       var code = jsQR(imageData.data, imageData.width, imageData.height);
       if (code) {
-        objectEntity.setAttribute('gltf-model', 'url(' + testData[code.data] + ')');
+        gltfModel = testData[code.data];
+        if (gltfModel) {
+          objectEntity.setAttribute('gltf-model', 'url(' + gltfModel + ')');
+          aText.setAttribute("visible", false);
+        } else {
+          aText.setAttribute('value', code.data);
+          aText.setAttribute("visible", true);
+        }
         console.log(code.data);
       } else {
+        aText.setAttribute('value', 'No QR Code Data');
+        aText.setAttribute("visible", true);
         console.log('no qr code found');
       }
     }
