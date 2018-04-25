@@ -1,10 +1,10 @@
 ---
-title: New Sample 1
 layout: false
 ---
 
 <html>
 <head>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
   <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
   <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.0.2/dist/aframe-extras.min.js"></script>
@@ -12,22 +12,49 @@ layout: false
 
 <body style='margin : 0px; overflow: hidden;'>
 
-<a-scene embedded arjs='sourceType: webcam;'>
-  <a-assets>
-    <a-asset-item id="model" src="models/constructor-worker-threejs/constructor-worker.json">
-    </a-asset-item>
-  </a-assets>
-  <a-marker preset='custom' type='pattern' url='images/pattern-qrcode-square.patt'>
-    <!--<a-box position='0 0 0' material='color: red;'></a-box>-->
-    <a-entity object-model="src:#model" scale="0.5 0.5 0.5"></a-entity>
+<a-scene embedded arjs>
+  <a-marker preset='custom' type='pattern'
+            url='https://prasannaboga.github.io/demo_arjs02/images/pattern-qrcode-square.patt'>
+    <a-entity id="objectEntity" animation-mixer></a-entity>
   </a-marker>
   <a-entity camera></a-entity>
 </a-scene>
 
-
+<script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
 <script type="text/javascript">
+
+  objectEntity = document.getElementById('objectEntity');
+
+  testData = {
+    'pink': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF/Duck.gltf',
+    'green': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoxAnimated/glTF/BoxAnimated.gltf',
+    'blue': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF/CesiumMan.gltf'
+  };
+
+  canvasElement = document.createElement("canvas");
+  canvasContext = canvasElement.getContext("2d");
+
+  //scan qr code
+  setInterval(function () {
+    video = document.querySelector("video");
+    if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
+      canvasElement.height = video.videoHeight;
+      canvasElement.width = video.videoWidth;
+      canvasContext.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+      var imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
+      var code = jsQR(imageData.data, imageData.width, imageData.height);
+      if (code) {
+        objectEntity.setAttribute('gltf-model', 'url(' + testData[code.data] + ')');
+        console.log(code.data);
+      } else {
+        console.log('no qr code found');
+      }
+    }
+  }, 1000);
+
 
 </script>
 
 </body>
 </html>
+
