@@ -10,8 +10,9 @@
 
 <a-scene embedded arjs>
   <a-marker preset='custom' type='pattern'
-            url='images/pattern-marker-D.patt'>
-    <a-entity id="objectEntity" animation-mixer></a-entity>
+            url='https://cdn.rawgit.com/jeromeetienne/AR.js/master/data/multimarkers/multi-abcdef/patt.d'>
+    <a-box color="#FFF" width="4" height="10" depth="2"
+           position="-10 2 -5" rotation="0 0 45" scale="2 0.5 3"></a-box>
   </a-marker>
   <a-entity camera></a-entity>
 </a-scene>

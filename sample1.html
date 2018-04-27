@@ -4,7 +4,6 @@
   <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
   <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
   <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.0.2/dist/aframe-extras.min.js"></script>
-  <script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
 </head>
 
 <body style='margin : 0px; overflow: hidden;'>
@@ -12,16 +11,55 @@
 <a-scene embedded arjs>
   <a-marker preset='custom' type='pattern'
             url='https://prasannaboga.github.io/demo_arjs02/images/pattern-qrcode-square.patt'>
-    <a-box color="orange" width="4" height="10" depth="2"
-           position="-10 2 -5" rotation="0 0 45" scale="2 0.5 3">
-    </a-box>
+    <a-entity id="objectEntity" animation-mixer></a-entity>
+    <a-text id="aText" color="red"
+            position="0 0 0" rotation="0 90 0" scale="1 1 1"></a-text>
   </a-marker>
   <a-entity camera></a-entity>
 </a-scene>
 
+<script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
 <script type="text/javascript">
 
+  objectEntity = document.getElementById('objectEntity');
+  aText = document.getElementById('aText');
 
+  undefinedObject = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Monster/glTF/Monster.gltf';
+  testData = {
+    'pink': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF/Duck.gltf',
+    'green': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoxAnimated/glTF/BoxAnimated.gltf',
+    'blue': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF/CesiumMan.gltf'
+  };
+
+  canvasElement = document.createElement("canvas");
+  canvasContext = canvasElement.getContext("2d");
+
+  //scan qr code
+  setInterval(function () {
+    video = document.querySelector("video");
+    if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
+      canvasElement.height = video.videoHeight;
+      canvasElement.width = video.videoWidth;
+      canvasContext.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+      var imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
+      var code = jsQR(imageData.data, imageData.width, imageData.height);
+      if (code) {
+        gltfModel = testData[code.data];
+        if (gltfModel) {
+          objectEntity.setAttribute('gltf-model', 'url(' + gltfModel + ')');
+          aText.setAttribute("visible", false);
+        } else {
+          aText.setAttribute('value', code.data);
+          aText.setAttribute("visible", true);
+        }
+        console.log(code.data);
+      } else {
+        aText.setAttribute('value', 'No QR Code Data');
+        aText.setAttribute("visible", true);
+        console.log('no qr code found');
+      }
+    }
+  }, 1000);
 
 
 </script>
