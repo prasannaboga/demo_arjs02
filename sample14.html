@@ -10,12 +10,19 @@
 
 <a-scene embedded arjs>
   <a-marker preset='custom' type='pattern'
-            url='https://cdn.rawgit.com/jeromeetienne/AR.js/master/data/multimarkers/multi-abcdef/patt.d'>
-    <a-box color="#FFF" width="4" height="10" depth="2"
-           position="-10 2 -5" rotation="0 0 45" scale="2 0.5 3"></a-box>
+            url='https://prasannaboga.github.io/demo_arjs02/images/pattern-marker-D.patt'>
+    <a-box color="green" position="0 0 0" rotation="45 30 45" scale="1 1 1" rotation="0 0 0" material='opacity: 0.7;'>
+      <a-animation attribute="rotation" to="360 45 90" dur="9000" repeat="indefinite" easing="linear"></a-animation>
+    </a-box>
   </a-marker>
   <a-entity camera></a-entity>
 </a-scene>
 
+<script type="text/javascript">
+  aBox = document.querySelector('a-box');
+  setInterval(function () {
+    aBox
+  }, 2000)
+</script>
 </body>
 </html>
