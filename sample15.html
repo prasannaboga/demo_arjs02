@@ -25,7 +25,9 @@
           el.addEventListener('model-loaded', function (e) {
             var bbox = new THREE.Box3().setFromObject(e.detail.model);
             var scale = 1 / (bbox.max.x - bbox.min.x);
-            scale = scale * 1.5;
+            $('#calcScale').text(scale);
+            console.log(scale);
+            scale = scale * 4;
             el.object3D.scale.set(scale, scale, scale);
           });
         }
@@ -47,7 +49,8 @@
 </a-scene>
 
 <div class="qr-data-info">
-  QR Data : <span id="qrData"></span>
+  QR Data : <span id="qrData"></span> <br>
+  Calc Scale : <span id="calcScale"></span>
 </div>
 
 <script type="text/javascript">
