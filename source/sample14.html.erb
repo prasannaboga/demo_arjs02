@@ -4,29 +4,205 @@ layout: false
 ---
 <html>
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+  <meta http-equiv="Pragma" content="no-cache"/>
+  <meta http-equiv="Expires" content="0"/>
+  <!-- Use the title from a page's frontmatter if it has one -->
+  <title>threejs sample</title>
+  <link rel="shortcut icon" href="about:blank">
+  <link href="https://bootswatch.com/4/flatly/bootstrap.min.css" rel="stylesheet"/>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
-  <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
-  <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.0.2/dist/aframe-extras.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.0/underscore-min.js"></script>
+  <script src="https://threejs.org/build/three.js"></script>
+  <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://threejs.org/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
+  <style type="text/css">
+    html, body {
+      height: 100%;
+    }
+  </style>
 </head>
-
-<body style='margin : 0px; overflow: hidden;'>
-
-<a-scene embedded arjs>
-  <a-marker preset='custom' type='pattern'
-            url='https://prasannaboga.github.io/demo_arjs02/images/pattern-marker-D.patt'>
-    <a-box color="green" position="0 0 0" rotation="45 30 45" scale="1 1 1" rotation="0 0 0" material='opacity: 0.7;'>
-      <a-animation attribute="rotation" to="360 45 90" dur="9000" repeat="indefinite" easing="linear"></a-animation>
-    </a-box>
-  </a-marker>
-  <a-entity camera></a-entity>
-</a-scene>
+<body>
+<div class="container-fluid h-100">
+  <div class="row h-100">
+    <div class="col-12">
+      <div class="card border-primary h-100">
+        <div id="sceneCanvas" class="card-img-top w-100 h-100"></div>
+        <div class="card-body">
+          <div class="title">three.js sample</div>
+          <div>
+            QR Data : <span id="qrData"></span>
+          </div>
+          <hr/>
+          <button class="btn btn-primary" id="reset">Reset</button>
+          <button class="btn btn-primary" id="reloadPage">Reload Page</button>
+          &nbsp;
+          &nbsp;
+          <button class="btn btn-primary" id="pauseAnimation" hidden>Pause</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script type="text/javascript">
-  aBox = document.querySelector('a-box');
-  setInterval(function () {
-    aBox
-  }, 2000)
+  try {
+    THREE.Cache.enabled = true;
+
+    //Get render width and height
+    sceneWidth = $('#sceneCanvas').width() - 0;
+    sceneHeight = $('#sceneCanvas').height() - 5;
+
+    //Renderer
+    renderer = new THREE.WebGLRenderer({alpha: true});
+    renderer.setClearAlpha(0.0);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(sceneWidth, sceneHeight);
+    $('#sceneCanvas').html(renderer.domElement);
+
+    //Camera
+    camera = new THREE.PerspectiveCamera(100, sceneWidth / sceneHeight, 1, 1000);
+    camera.position.z = 5;
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    //Limit zoom
+    controls.enableZoom = true;
+    //controls.minDistance = 10;
+    //controls.maxDistance = 100;
+    controls.update();
+
+    //Object Scene
+    scene = new THREE.Scene();
+
+    //light to view object
+    light = new THREE.HemisphereLight(0xbbbbff, 0x444422);
+    light.position.set(0, 1, 0);
+    scene.add(light);
+
+    //enable webcam and stream video
+    videoElement = document.createElement("video");
+    navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: 'environment'
+      }
+    }).then(function (stream) {
+      videoElement.srcObject = stream;
+      videoElement.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
+      videoElement.play();
+    }).catch(function (err) {
+      alert(err);
+    });
+
+    //Add video to canvas
+    videoCanvas = document.createElement('canvas');
+    videoCanvas.width = sceneWidth;
+    videoCanvas.height = sceneHeight;
+    videoCanvasContext = videoCanvas.getContext('2d');
+    videoTexture = new THREE.Texture(videoCanvas);
+    videoTexture.minFilter = THREE.LinearFilter;
+    videoTexture.magFilter = THREE.LinearFilter;
+    movieMaterial = new THREE.MeshBasicMaterial({map: videoTexture});
+    movieGeometry = new THREE.PlaneGeometry(2, 2, 0);
+    movieMesh = new THREE.Mesh(movieGeometry, movieMaterial);
+    movieMesh.material.depthTest = false;
+    movieMesh.material.depthWrite = false;
+    backgroundScene = new THREE.Scene();
+    backgroundCamera = new THREE.Camera();
+    backgroundScene.add(backgroundCamera);
+    backgroundScene.add(movieMesh);
+
+    oldQRCodeValue = '';
+    loader = new THREE.GLTFLoader();
+
+    function loadGlftObject(value) {
+      if (!value) {
+        console.log('****No value ');
+        return;
+      }
+
+      oldQRCodeValue = value;
+      data = {
+        'red': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF/Duck.gltf',
+        'green': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoxAnimated/glTF/BoxAnimated.gltf',
+        'blue': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF/CesiumMan.gltf',
+        'pink': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/RiggedSimple/glTF/RiggedSimple.gltf',
+        'yellow': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/Monster/glTF/Monster.gltf',
+        'orange': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/ReciprocatingSaw/glTF/ReciprocatingSaw.gltf'
+      }
+
+      loader.load(data[value], function (gltf) {
+        gltfScene = gltf.scene;
+        gltfScene.name = 'gltfObject';
+
+        var bbox = new THREE.Box3().setFromObject(gltfScene);
+        scale = 1 / (bbox.max.x - bbox.min.x);
+        scale = scale * 2;
+        gltfScene.scale.set(scale, scale, scale);
+        gltfScene.position.set(0, 0, 0);
+        scene.add(gltfScene);
+
+        mixer = new THREE.AnimationMixer(gltfScene);
+        gltf.animations.forEach(function (clip) {
+          mixer.clipAction(clip).play();
+        });
+
+      }, function (xhr) {
+
+      }, function (error) {
+        alert(error.message);
+        console.log(error);
+      });
+    }
+
+    var animate = function () {
+      requestAnimationFrame(animate);
+      renderer.clear();
+
+      if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+        videoCanvasContext.drawImage(videoElement, 0, 0, videoCanvas.width, videoCanvas.height);
+        videoTexture.needsUpdate = true;
+        imageData = videoCanvasContext.getImageData(0, 0, videoCanvas.width, videoCanvas.height);
+        qrCode = jsQR(imageData.data, imageData.width, imageData.height);
+        if (qrCode && qrCode.data != '' && qrCode.data != oldQRCodeValue) {
+          console.log('Scanned Value - ' + qrCode.data);
+          $('#qrData').text(qrCode.data);
+          oldGltf = scene.getObjectByName('gltfObject');
+          if (oldGltf) {
+            scene.remove(oldGltf);
+          }
+          loadGlftObject(qrCode.data);
+        }
+      }
+
+      renderer.autoClear = false;
+      controls.update();
+
+      renderer.render(backgroundScene, backgroundCamera);
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    $('button#reset').click(function () {
+      oldQRCodeValue = '';
+      $('#qrData').text(oldQRCodeValue);
+      oldGltf = scene.getObjectByName('gltfObject');
+      if (oldGltf) {
+        scene.remove(oldGltf);
+      }
+    });
+
+    $('button#reloadPage').click(function () {
+      window.location.reload(true);
+    });
+
+  } catch (error) {
+    alert(error.message);
+  }
 </script>
 </body>
 </html>
