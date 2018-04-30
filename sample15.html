@@ -24,11 +24,11 @@
           var el = this.el;
           el.addEventListener('model-loaded', function (e) {
             var bbox = new THREE.Box3().setFromObject(e.detail.model);
-            var scale = 1 / (bbox.max.x - bbox.min.x);
-            $('#calcScale').text(scale);
-            console.log(scale);
-            scale = scale * 1.7;
-            el.object3D.scale.set(scale, scale, scale);
+//            var scale = 1 / (bbox.max.x - bbox.min.x);
+//            $('#calcScale').text(scale);
+//            console.log(scale);
+//            scale = scale * 1.7;
+//            el.object3D.scale.set(scale, scale, scale);
           });
         }
       });
