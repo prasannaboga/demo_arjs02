@@ -30,7 +30,16 @@ layout: false
           el.addEventListener('model-loaded', function (e) {
             var bbox = new THREE.Box3().setFromObject(e.detail.model);
             var scale = 1 / (bbox.max.x - bbox.min.x);
-            scale = scale * 1.5;
+            scale = parseFloat(scale.toFixed(2));
+            $('#calcScale').text(scale);
+            console.log(scale);
+            if (scale > 0.01) {
+              scale = scale * 3;
+            } else if (scale > 0.3) {
+              scale = scale * 5;
+            } else if (scale > 0.1) {
+              scale = scale * 10;
+            }
             el.object3D.scale.set(scale, scale, scale);
           });
         }
@@ -52,7 +61,8 @@ layout: false
 </a-scene>
 
 <div class="qr-data-info">
-  QR Data : <span id="qrData"></span>
+  QR Data : <span id="qrData"></span> <br>
+  Calc Scale : <span id="calcScale"></span>
 </div>
 
 <script type="text/javascript">
@@ -65,7 +75,7 @@ layout: false
       'blue': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF/CesiumMan.gltf',
       'pink': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/RiggedSimple/glTF/RiggedSimple.gltf',
       'yellow': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/Monster/glTF/Monster.gltf',
-      'orange': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/ReciprocatingSaw/glTF/ReciprocatingSaw.gltf'
+      'orange': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf'
     };
 
     canvasElement = document.createElement("canvas");
