@@ -5,7 +5,14 @@ layout: false
 
 <html>
 <head>
-  <title>AR.js sample using Square.patt</title>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+  <meta http-equiv="Pragma" content="no-cache"/>
+  <meta http-equiv="Expires" content="0"/>
+  <title>AR.js sample using D.patt</title>
   <link rel="shortcut icon" href="about:blank">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
@@ -21,7 +28,6 @@ layout: false
       padding: 5px;
     }
   </style>
-
   <script type="text/javascript">
     try {
       AFRAME.registerComponent('autoscale', {
@@ -30,7 +36,7 @@ layout: false
           el.addEventListener('model-loaded', function (e) {
             var bbox = new THREE.Box3().setFromObject(e.detail.model);
             var scale = 1 / (bbox.max.x - bbox.min.x);
-            scale = scale * 1.5;
+            scale = scale * 2;
             el.object3D.scale.set(scale, scale, scale);
           });
         }
@@ -45,7 +51,7 @@ layout: false
 
 <a-scene embedded arjs="debugUIEnabled: false;" vr-mode-ui="enabled: false">
   <a-marker preset='custom' type='pattern'
-            url='https://prasannaboga.github.io/demo_arjs02/images/pattern-qrcode-square.patt'>
+            url='https://prasannaboga.github.io/demo_arjs02/images/pattern-marker-D.patt'>
     <a-entity id="objectEntity" animation-mixer autoscale></a-entity>
   </a-marker>
   <a-entity camera></a-entity>
@@ -91,7 +97,6 @@ layout: false
           }
           oldQRCodeValue = qrCode.data;
           console.log(qrCode.data);
-          $('#qrData').text(qrCode.data);
         } else {
           console.log('no qr code found');
         }
