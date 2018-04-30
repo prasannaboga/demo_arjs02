@@ -14,6 +14,15 @@
   <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
   <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.0.2/dist/aframe-extras.min.js"></script>
   <script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
+  <style type="text/css">
+    .qr-data-info {
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      background: rgba(204, 204, 204, 0.3);
+      padding: 5px;
+    }
+  </style>
   <script type="text/javascript">
     try {
       AFRAME.registerComponent('autoscale', {
@@ -42,6 +51,10 @@
   </a-marker>
   <a-entity camera></a-entity>
 </a-scene>
+
+<div class="qr-data-info">
+  QR Data : <span id="qrData"></span>
+</div>
 
 <script type="text/javascript">
   try {
@@ -79,6 +92,7 @@
           }
           oldQRCodeValue = qrCode.data;
           console.log(qrCode.data);
+          $('#qrData').text(qrCode.data);
         } else {
           console.log('no qr code found');
         }
