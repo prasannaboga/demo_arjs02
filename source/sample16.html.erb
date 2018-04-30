@@ -97,6 +97,7 @@ layout: false
           }
           oldQRCodeValue = qrCode.data;
           console.log(qrCode.data);
+          $('#qrData').text(qrCode.data);
         } else {
           console.log('no qr code found');
         }
