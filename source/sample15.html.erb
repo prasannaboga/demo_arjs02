@@ -33,13 +33,14 @@ layout: false
             scale = parseFloat(scale.toFixed(2));
             $('#calcScale').text(scale);
             console.log(scale);
-            if (scale > 0.01) {
-              scale = scale * 3;
-            } else if (scale > 0.3) {
-              scale = scale * 5;
-            } else if (scale > 0.1) {
-              scale = scale * 10;
-            }
+//            if(scale < 0.01) {
+//              scale = scale * 10;
+//            } else if (scale < 0.1) {
+//              scale = scale * 5;
+//            } else {
+//              scale = scale;
+//            }
+            scale = scale * 1.5;
             el.object3D.scale.set(scale, scale, scale);
           });
         }
