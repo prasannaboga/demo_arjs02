@@ -1,26 +1,74 @@
-<!doctype html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
-  <meta http-equiv="Pragma" content="no-cache"/>
-  <meta http-equiv="Expires" content="0"/>
-  <!-- Use the title from a page's frontmatter if it has one -->
-  <title>Sample Project for QR Code with AR</title>
+  <title>AR.js sample using Square.patt</title>
   <link rel="shortcut icon" href="about:blank">
-  <link href="https://bootswatch.com/4/flatly/bootstrap.min.css" rel="stylesheet" />
-  <link href="stylesheets/site.css" rel="stylesheet" />
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.0/underscore-min.js"></script>
-  <script src="javascripts/site.js"></script>
+  <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.6.0/aframe/build/aframe-ar.js"></script>
+  <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.0.2/dist/aframe-extras.min.js"></script>
+  <script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
+  <style type="text/css">
+    .debug-info {
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      background: rgba(204, 204, 204, 0.3);
+      padding: 5px;
+    }
+  </style>
+
+  <script type="text/javascript">
+    try {
+      AFRAME.registerComponent('autoscale', {
+        init: function () {
+          var el = this.el;
+          el.addEventListener('loaded', function (e) {
+            console.log('loaded event *******');
+            delta = window.innerWidth/window.innerHeight * 100;
+            delta = THREE.Math.clamp(delta, -0.5, 0.5);
+            scale = el.object3D.scale.x * (1 + delta);
+            scale = THREE.Math.clamp(scale, 0.2, 10);
+            el.object3D.scale.set(scale, scale, scale);
+            console.log(el.object3D.scale);
+          });
+          el.addEventListener('model-loaded', function (e) {
+            var bbox = new THREE.Box3().setFromObject(e.detail.model);
+            var scale = 1 / (bbox.max.x - bbox.min.x);
+            console.log(scale);
+            scale = scale * 2;
+            el.object3D.scale.set(scale, scale, scale);
+          });
+        }
+      });
+
+    } catch (error) {
+      alert(error.message);
+    }
+  </script>
 </head>
-<body>
-<div class="container-fluid">
-  
+
+<body style='margin : 0px; overflow: hidden;'>
+
+<a-scene embedded arjs='sourceType: webcam;'>
+  <a-marker preset='custom' type='pattern' url='https://prasannaboga.github.io/demo_arjs02/images/pattern-qrcode-square.patt'>
+    <a-box id="myBox" color="black" position="0 0 0" material='opacity: 0.7;' autoscale>
+
+    </a-box>
+  </a-marker>
+  <a-entity camera></a-entity>
+</a-scene>
+
+<div class="debug-info">
+
 </div>
+
+<script type="text/javascript">
+  try {
+
+  } catch (error) {
+    alert(error.message)
+  }
+</script>
 
 </body>
 </html>
