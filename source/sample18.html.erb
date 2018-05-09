@@ -1,0 +1,50 @@
+---
+title: Sample15
+layout: false
+---
+
+<html>
+<head>
+  <title>AR.js sample using Square.patt</title>
+  <link rel="shortcut icon" href="about:blank">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.5.5/aframe/build/aframe-ar.js"></script>
+  <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.0.2/dist/aframe-extras.min.js"></script>
+  <script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
+  <style type="text/css">
+    .debug-info {
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      background: rgba(204, 204, 204, 0.3);
+      padding: 5px;
+    }
+  </style>
+
+  <script type="text/javascript">
+
+  </script>
+</head>
+
+<body style='margin : 0px; overflow: hidden;'>
+
+<a-scene embedded arjs="sourceType: image; sourceUrl:https://prasannaboga.github.io/demo_arjs02/images/hiro_marker_background.png; debug: false;">
+  <a-box position='1 1 1' material='opacity: 0.8;' color='red'></a-box>
+  <a-marker-camera preset='hiro'></a-marker-camera>
+</a-scene>
+
+<div class="debug-info">
+
+</div>
+
+<script type="text/javascript">
+  try {
+
+  } catch (error) {
+    alert(error.message)
+  }
+</script>
+
+</body>
+</html>
