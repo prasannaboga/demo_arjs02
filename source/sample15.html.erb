@@ -28,19 +28,17 @@ layout: false
         init: function () {
           var el = this.el;
           el.addEventListener('model-loaded', function (e) {
-            var bbox = new THREE.Box3().setFromObject(e.detail.model);
-            var scale = 1 / (bbox.max.x - bbox.min.x);
-            scale = parseFloat(scale.toFixed(2));
-            $('#calcScale').text(scale);
-            console.log(scale);
-//            if(scale < 0.01) {
-//              scale = scale * 10;
-//            } else if (scale < 0.1) {
-//              scale = scale * 5;
-//            } else {
-//              scale = scale;
-//            }
-            scale = scale * 1.5;
+            box3 = new THREE.Box3().setFromObject(e.detail.model);
+            delta = 1 / (box3.max.x - box3.min.x);
+            scale = 1;
+            if (delta >= 1 && delta <= 2) {
+              scale = THREE.Math.clamp(delta, 4, 5)
+            } else if (delta < 1) {
+              scale = THREE.Math.clamp(delta, 4, 5);
+            } else {
+              scale = delta;
+            }
+            console.log('*** delta, scale -- ', delta, scale);
             el.object3D.scale.set(scale, scale, scale);
           });
         }

@@ -12,6 +12,7 @@ layout: false
   <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.6.0/aframe/build/aframe-ar.js"></script>
   <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.0.2/dist/aframe-extras.min.js"></script>
   <script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
+  <script src="https://hammerjs.github.io/dist/hammer.js"></script>
   <style type="text/css">
     .debug-info {
       position: fixed;
@@ -23,24 +24,52 @@ layout: false
   </style>
 
   <script type="text/javascript">
+    data = {
+      'red': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF/Duck.gltf',
+      'green': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoxAnimated/glTF/BoxAnimated.gltf',
+      'blue': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF/CesiumMan.gltf',
+      'pink': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/RiggedSimple/glTF/RiggedSimple.gltf',
+      'yellow': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/Monster/glTF/Monster.gltf',
+      'orange': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf'
+    };
+
+    queries = {};
+    $.each(document.location.search.substr(1).split('&'), function (c, q) {
+      var i = q.split('=');
+      queries[i[0].toString()] = i[1].toString();
+    });
+
+    objectUrl = data[queries['color']];
+    console.log(objectUrl)
+
+
     try {
       AFRAME.registerComponent('autoscale', {
         init: function () {
           var el = this.el;
-          el.addEventListener('loaded', function (e) {
+          /*el.addEventListener('loaded', function (e) {
             console.log('loaded event *******');
-            delta = window.innerWidth/window.innerHeight * 100;
+            delta = window.innerWidth / window.innerHeight * 100;
             delta = THREE.Math.clamp(delta, -0.5, 0.5);
             scale = el.object3D.scale.x * (1 + delta);
             scale = THREE.Math.clamp(scale, 0.2, 10);
             el.object3D.scale.set(scale, scale, scale);
             console.log(el.object3D.scale);
-          });
+          });*/
           el.addEventListener('model-loaded', function (e) {
-            var bbox = new THREE.Box3().setFromObject(e.detail.model);
-            var scale = 1 / (bbox.max.x - bbox.min.x);
-            console.log(scale);
-            scale = scale * 2;
+            box3 = new THREE.Box3().setFromObject(el.object3D);
+            delta = 1 / (box3.max.x - box3.min.x);
+            scale = 1;
+            if (delta >= 1 && delta <= 2) {
+              scale = THREE.Math.clamp(delta, 4, 5)
+            } else if (delta < 1) {
+              scale = THREE.Math.clamp(delta, 4, 5);
+            } else {
+              scale = delta;
+            }
+            console.log('****');
+            console.log(delta, scale);
+            console.log('****');
             el.object3D.scale.set(scale, scale, scale);
           });
         }
@@ -54,24 +83,51 @@ layout: false
 
 <body style='margin : 0px; overflow: hidden;'>
 
-<a-scene embedded arjs='sourceType: webcam;'>
+<a-scene embedded arjs='sourceType: webcam;debugUIEnabled: false;' vr-mode-ui="enabled: false">
   <a-marker preset='custom' type='pattern' url='https://prasannaboga.github.io/demo_arjs02/images/pattern-qrcode-square.patt'>
-    <a-box id="myBox" color="black" position="0 0 0" material='opacity: 0.7;' autoscale>
-
-    </a-box>
+    <a-entity id="gltfModelEntity" gltf-model="url(https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF/CesiumMan.gltf)" animation-mixer autoscale></a-entity>
+    <!--<a-entity id="gltfModelEntity" gltf-model="url(https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF/CesiumMan.gltf)" animation-mixer autoscale></a-entity>-->
   </a-marker>
   <a-entity camera></a-entity>
 </a-scene>
 
 <div class="debug-info">
 
+  <span id="loggerMsg"></span>
+  <span id="errorMsg"></span>
 </div>
 
 <script type="text/javascript">
   try {
+    $debugInfo = $('.debug-info');
+    $loggerMsg = $('#loggerMsg');
+    $errorMsg = $('#errorMsg');
+    canvas = document.querySelector('canvas');
+    gltfModelEntity = document.querySelector('#gltfModelEntity');
+    gltfModelEntity.setAttribute('gltf-model', 'url(' + objectUrl + ')');
 
+    hammer = new Hammer(canvas);
+
+    hammer.on('panup pandown', function (event) {
+      var delta = window.innerWidth / window.innerHeight;// * 60;
+      $loggerMsg.text(delta);
+      //delta = THREE.Math.clamp(delta, -0.2, 0.2)
+      //scaleObject(delta);
+    });
+
+    function scaleObject(delta) {
+      scale = gltfModelEntity.object3D.scale.x * (1 + delta);
+      scale = THREE.Math.clamp(scale, 0.2, 10);
+      $loggerMsg.text(scale);
+      gltfModelEntity.scale.set(scale, scale, scale);
+    }
+
+    function printLoggerMsg(msg) {
+      $loggerMsg.html($loggerMsg.html() + '<br>' + msg);
+    }
   } catch (error) {
-    alert(error.message)
+    $errorMsg.text(error.message);
+    alert(error.message);
   }
 </script>
 
