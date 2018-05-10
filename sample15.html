@@ -23,12 +23,18 @@
         init: function () {
           var el = this.el;
           el.addEventListener('model-loaded', function (e) {
-            delta = window.innerWidth/window.innerHeight * 100;
-            delta = THREE.Math.clamp(delta, -0.5, 0.5);
-            scale = el.object3D.scale.x * (1 + delta);
-            scale = THREE.Math.clamp(scale, 0.2, 10);
+            box3 = new THREE.Box3().setFromObject(e.detail.model);
+            delta = 1 / (box3.max.x - box3.min.x);
+            scale = 1;
+            if (delta >= 1 && delta <= 2) {
+              scale = THREE.Math.clamp(delta, 4, 5)
+            } else if (delta < 1) {
+              scale = THREE.Math.clamp(delta, 4, 5);
+            } else {
+              scale = delta;
+            }
+            console.log('*** delta, scale -- ', delta, scale);
             el.object3D.scale.set(scale, scale, scale);
-            console.log(el.object3D.scale);
           });
         }
       });
