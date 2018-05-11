@@ -136,6 +136,7 @@
 
     $('.btn-clear').click(function () {
       oldQRCodeValue = '';
+      $('#qrData').text(oldQRCodeValue);
       objectEntity.removeAttribute('gltf-model');
     });
 
