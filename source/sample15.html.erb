@@ -12,6 +12,7 @@ layout: false
   <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
   <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.0.2/dist/aframe-extras.min.js"></script>
   <script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
+  <script src="https://hammerjs.github.io/dist/hammer.js"></script>
   <style type="text/css">
     .qr-data-info {
       position: fixed;
@@ -33,6 +34,8 @@ layout: false
             scale = 1;
             if (delta >= 1 && delta <= 2) {
               scale = THREE.Math.clamp(delta, 4, 5)
+            } else if (delta < 0.09) {
+              scale = THREE.Math.clamp(delta, 0.3, 1);
             } else if (delta < 1) {
               scale = THREE.Math.clamp(delta, 4, 5);
             } else {
@@ -61,7 +64,6 @@ layout: false
 
 <div class="qr-data-info">
   QR Data : <span id="qrData"></span> <br>
-  Calc Scale : <span id="calcScale"></span>
 </div>
 
 <script type="text/javascript">
@@ -69,12 +71,12 @@ layout: false
     objectEntity = document.getElementById('objectEntity');
 
     data = {
-      'red': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF/Duck.gltf',
-      'green': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoxAnimated/glTF/BoxAnimated.gltf',
-      'blue': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF/CesiumMan.gltf',
+      'orange': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF/Duck.gltf',
+      'blue': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoxAnimated/glTF/BoxAnimated.gltf',
+      'green': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF/CesiumMan.gltf',
       'pink': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/RiggedSimple/glTF/RiggedSimple.gltf',
       'yellow': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/Monster/glTF/Monster.gltf',
-      'orange': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf'
+      'red': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf'
     };
 
     canvasElement = document.createElement("canvas");
@@ -106,6 +108,20 @@ layout: false
         }
       }
     }, 1000);
+
+    canvas = document.querySelector('canvas');
+    hammer = new Hammer(canvas);
+
+    hammer.on('panup pandown', function (event) {
+      if (objectEntity.object3D.scale.x < 1) {
+        return false;
+      }
+      delta = -event.velocityY / window.innerHeight * 60;
+      delta = THREE.Math.clamp(delta, -0.2, 0.2);
+      delta = objectEntity.object3D.scale.x * (1 + delta);
+      scale = THREE.Math.clamp(delta, 2, 10);
+      objectEntity.object3D.scale.set(scale, scale, scale);
+    });
 
   } catch (error) {
     alert(error.message)
