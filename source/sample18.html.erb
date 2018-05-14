@@ -1,5 +1,5 @@
 ---
-title: Sample15
+title: Sample18
 layout: false
 ---
 
@@ -9,37 +9,141 @@ layout: false
   <link rel="shortcut icon" href="about:blank">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
-  <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.5.5/aframe/build/aframe-ar.js"></script>
+  <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
   <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.0.2/dist/aframe-extras.min.js"></script>
   <script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
+  <script src="https://hammerjs.github.io/dist/hammer.js"></script>
   <style type="text/css">
-    .debug-info {
+    .qr-data-info {
       position: fixed;
       top: 0px;
       left: 0px;
       background: rgba(204, 204, 204, 0.3);
       padding: 5px;
     }
+
+    .tool-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      background: rgba(204, 204, 204, 0.3);
+      padding: 5px;
+    }
+
+    .tool-bar .btn-clear {
+      font-size: 20px;
+      text-decoration: none;
+      color: black;
+    }
   </style>
 
   <script type="text/javascript">
-
+    try {
+      AFRAME.registerComponent('autoscale', {
+        init: function () {
+          var el = this.el;
+          el.addEventListener('model-loaded', function (e) {
+            box3 = new THREE.Box3().setFromObject(e.detail.model);
+            delta = 1 / (box3.max.x - box3.min.x);
+            scale = 1;
+            if (delta >= 1 && delta <= 2) {
+              scale = THREE.Math.clamp(delta, 3, 4)
+            } else if (delta < 0.09) {
+              scale = THREE.Math.clamp(delta, 0.3, 1);
+            } else if (delta < 1) {
+              scale = THREE.Math.clamp(delta, 4, 5);
+            } else {
+              scale = delta;
+            }
+            console.log('*** delta, scale -- ', delta, scale);
+            el.object3D.scale.set(scale, scale, scale);
+          });
+        }
+      });
+    } catch (error) {
+      alert(error.message);
+    }
   </script>
 </head>
 
 <body style='margin : 0px; overflow: hidden;'>
 
-<a-scene embedded arjs="sourceType: image; sourceUrl:https://prasannaboga.github.io/demo_arjs02/images/hiro_marker_background.png; debug: false;">
-  <a-box position='1 1 1' material='opacity: 0.8;' color='red'></a-box>
-  <a-marker-camera preset='hiro'></a-marker-camera>
+<a-scene embedded arjs="debugUIEnabled: false;" vr-mode-ui="enabled: false">
+  <a-entity id="objectEntity" animation-mixer autoscale></a-entity>
+  <a-marker-camera preset='custom' type='pattern' url='https://prasannaboga.github.io/demo_arjs02/images/pattern-qrcode-square.patt'></a-marker-camera>
 </a-scene>
 
-<div class="debug-info">
-
+<div class="qr-data-info">
+  QR Data : <span id="qrData"></span> <br>
 </div>
+
+<div class="tool-bar">
+  <a href="#" class="btn-clear">Clear</a>
+</div>
+
 
 <script type="text/javascript">
   try {
+    objectEntity = document.getElementById('objectEntity');
+
+    data = {
+      'orange': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF/Duck.gltf',
+      'blue': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoxAnimated/glTF/BoxAnimated.gltf',
+      'green': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF/CesiumMan.gltf',
+      'pink': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/RiggedSimple/glTF/RiggedSimple.gltf',
+      'yellow': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/Monster/glTF/Monster.gltf',
+      'red': 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF/BrainStem.gltf'
+    };
+
+    canvasElement = document.createElement("canvas");
+    canvasContext = canvasElement.getContext("2d");
+
+    oldQRCodeValue = '';
+
+    //scan qr code
+    setInterval(function () {
+      video = document.querySelector("video");
+      if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvasElement.height = video.videoHeight;
+        canvasElement.width = video.videoWidth;
+        canvasContext.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+        var imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
+        var qrCode = jsQR(imageData.data, imageData.width, imageData.height);
+        if (qrCode && qrCode.data != '' && qrCode.data != oldQRCodeValue) {
+          gltfModel = data[qrCode.data];
+          if (gltfModel) {
+            objectEntity.setAttribute('gltf-model', 'url(' + gltfModel + ')');
+          } else {
+            alert('no object found');
+          }
+          oldQRCodeValue = qrCode.data;
+          console.log(qrCode.data);
+          $('#qrData').text(qrCode.data);
+        } else {
+          console.log('no qr code found');
+        }
+      }
+    }, 1000);
+
+    canvas = document.querySelector('canvas');
+    hammer = new Hammer(canvas);
+
+    hammer.on('panup pandown', function (event) {
+      if (objectEntity.object3D.scale.x < 1) {
+        return false;
+      }
+      delta = -event.velocityY / window.innerHeight * 60;
+      delta = THREE.Math.clamp(delta, -0.2, 0.2);
+      delta = objectEntity.object3D.scale.x * (1 + delta);
+      scale = THREE.Math.clamp(delta, 2, 10);
+      objectEntity.object3D.scale.set(scale, scale, scale);
+    });
+
+    $('.btn-clear').click(function () {
+      oldQRCodeValue = '';
+      $('#qrData').text(oldQRCodeValue);
+      objectEntity.removeAttribute('gltf-model');
+    });
 
   } catch (error) {
     alert(error.message)

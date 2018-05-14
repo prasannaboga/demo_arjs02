@@ -16,10 +16,24 @@ layout: false
   <style type="text/css">
     .debug-info {
       position: fixed;
-      top: 0px;
-      left: 0px;
+      top: 0;
+      left: 0;
       background: rgba(204, 204, 204, 0.3);
       padding: 5px;
+    }
+
+    .tool-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      background: rgba(204, 204, 204, 0.3);
+      padding: 5px;
+    }
+
+    .tool-bar .btn-clear {
+      font-size: 20px;
+      text-decoration: none;
+      color: black;
     }
   </style>
 
@@ -36,11 +50,14 @@ layout: false
     queries = {};
     $.each(document.location.search.substr(1).split('&'), function (c, q) {
       var i = q.split('=');
-      queries[i[0].toString()] = i[1].toString();
+      if (i.length > 1) {
+        queries[i[0].toString()] = i[1].toString();
+      }
     });
-
     objectUrl = data[queries['color']];
-    console.log(objectUrl);
+    if (objectUrl === undefined) {
+      objectUrl = 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/RiggedSimple/glTF/RiggedSimple.gltf'
+    }
 
     try {
       AFRAME.registerComponent('autoscale', {
@@ -60,12 +77,10 @@ layout: false
             } else {
               scale = delta;
             }
-            console.log('*** delta, scale -- ', delta, scale);
             el.object3D.scale.set(scale, scale, scale);
           });
         }
       });
-
     } catch (error) {
       alert(error.message);
     }
@@ -75,17 +90,17 @@ layout: false
 <body style='margin : 0px; overflow: hidden;'>
 
 <a-scene embedded arjs='sourceType: webcam;debugUIEnabled: false;' vr-mode-ui="enabled: false">
-  <a-marker preset='custom' type='pattern' url='https://prasannaboga.github.io/demo_arjs02/images/pattern-qrcode-square.patt'>
-    <a-entity id="gltfModelEntity" animation-mixer autoscale></a-entity>
-    <!--<a-entity id="gltfModelEntity" gltf-model="url(https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF/CesiumMan.gltf)" animation-mixer autoscale></a-entity>-->
-  </a-marker>
-  <a-entity camera></a-entity>
+  <a-entity id="gltfModelEntity" animation-mixer autoscale></a-entity>
+  <a-marker-camera preset='custom' type='pattern' url='https://prasannaboga.github.io/demo_arjs02/images/pattern-qrcode-square.patt'></a-marker-camera>
 </a-scene>
 
 <div class="debug-info">
-
   <span id="loggerMsg"></span>
   <span id="errorMsg"></span>
+</div>
+
+<div class="tool-bar">
+  <a href="#" class="btn-clear">Clear</a>
 </div>
 
 <script type="text/javascript">
@@ -96,15 +111,12 @@ layout: false
 
     canvas = document.querySelector('canvas');
     gltfModelEntity = document.querySelector('#gltfModelEntity');
-    if (objectUrl === undefined) {
-      objectUrl = 'https://cdn.rawgit.com/KhronosGroup/glTF-Sample-Models/master/2.0/RiggedSimple/glTF/RiggedSimple.gltf'
-    }
     gltfModelEntity.setAttribute('gltf-model', 'url(' + objectUrl + ')');
 
     hammer = new Hammer(canvas);
 
     hammer.on('panup pandown', function (event) {
-      if(gltfModelEntity.object3D.scale.x < 1) {
+      if (gltfModelEntity.object3D.scale.x < 1) {
         return false;
       }
       delta = -event.velocityY / window.innerHeight * 60;
@@ -117,6 +129,11 @@ layout: false
     $errorMsg.text(error.message);
     alert(error.message);
   }
+
+  $('.btn-clear').click(function () {
+    console.log(gltfModelEntity)
+    gltfModelEntity.removeAttribute('gltf-model');
+  });
 </script>
 
 </body>

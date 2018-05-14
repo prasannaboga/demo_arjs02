@@ -1,5 +1,5 @@
 ---
-title: Sample15
+title: Sample19
 layout: false
 ---
 
@@ -47,7 +47,7 @@ layout: false
             delta = 1 / (box3.max.x - box3.min.x);
             scale = 1;
             if (delta >= 1 && delta <= 2) {
-              scale = THREE.Math.clamp(delta, 4, 5)
+              scale = THREE.Math.clamp(delta, 3, 4)
             } else if (delta < 0.09) {
               scale = THREE.Math.clamp(delta, 0.3, 1);
             } else if (delta < 1) {
@@ -69,8 +69,10 @@ layout: false
 <body style='margin : 0px; overflow: hidden;'>
 
 <a-scene embedded arjs="debugUIEnabled: false;" vr-mode-ui="enabled: false">
-  <a-entity id="objectEntity" animation-mixer autoscale></a-entity>
-  <a-marker-camera preset='custom' type='pattern' url='https://prasannaboga.github.io/demo_arjs02/images/pattern-qrcode-square.patt'></a-marker-camera>
+  <a-marker preset='custom' type='pattern' url='https://prasannaboga.github.io/demo_arjs02/images/pattern-qrcode-square.patt'>
+    <a-entity id="objectEntity" animation-mixer autoscale></a-entity>
+  </a-marker>
+  <a-entity camera></a-entity>
 </a-scene>
 
 <div class="qr-data-info">
