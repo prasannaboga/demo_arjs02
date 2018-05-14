@@ -15,6 +15,7 @@
   <script src="https://threejs.org/build/three.js"></script>
   <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
   <script src="https://threejs.org/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://threejs.org/examples/js/libs/stats.min.js"></script>
   <script src="https://cozmo.github.io/jsQR/jsQR.js"></script>
   <style type="text/css">
     html, body {
@@ -137,6 +138,7 @@
         scale = 1 / (bbox.max.x - bbox.min.x);
         scale = scale * 2;
         gltfScene.scale.set(scale, scale, scale);
+        gltfScene.rotation.set(45, 45, 0);
         gltfScene.position.set(0, 0, 0);
         scene.add(gltfScene);
 
@@ -144,6 +146,8 @@
         gltf.animations.forEach(function (clip) {
           mixer.clipAction(clip).play();
         });
+
+        scene.add(mixer);
 
       }, function (xhr) {
 
