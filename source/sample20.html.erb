@@ -8,11 +8,11 @@ layout: false
   <title>AR.js with default pattern with 512x512</title>
   <link rel="shortcut icon" href="about:blank">
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <script src="http://rangeslider.js.org/assets/rangeslider.js/dist/rangeslider.min.js"></script>
+  <script src="https://rangeslider.js.org/assets/rangeslider.js/dist/rangeslider.min.js"></script>
   <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
   <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
   <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.1.2/dist/aframe-extras.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="http://rangeslider.js.org/assets/rangeslider.js/dist/rangeslider.css">
+  <link rel="stylesheet" type="text/css" href="https://rangeslider.js.org/assets/rangeslider.js/dist/rangeslider.css">
   <style type="text/css">
     .rangeslider__fill {
       background: #e6e6e6;
@@ -116,7 +116,7 @@ layout: false
 
 <a-scene embedded arjs="debugUIEnabled: false;" vr-mode-ui="enabled: false">
   <a-marker preset='hiro' type='pattern'>
-    <a-entity id="objectEntity" animation-mixer autoscale></a-entity>
+    <a-entity id="objectEntity" animation-mixer autoscale rotation="0 -90 0"></a-entity>
   </a-marker>
   <a-entity camera></a-entity>
 </a-scene>
